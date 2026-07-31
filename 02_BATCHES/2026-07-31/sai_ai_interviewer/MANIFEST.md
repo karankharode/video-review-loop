@@ -21,7 +21,7 @@ API keys — see `00_ENGINE/v2`. Media files are gitignored; this manifest is no
 | True peak | **-1.47 dBTP** | ≤ −1.0 |
 | Loudness range | 2.70 LU | — |
 | Music bed in the mix | -26 LUFS | -26 |
-| SFX bus peak | -9 dBFS | -10 |
+| SFX bus peak | -10 dBFS | -10 |
 
 ## Music
 
