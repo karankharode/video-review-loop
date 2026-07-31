@@ -8,7 +8,7 @@ import {
   useVideoConfig,
 } from 'remotion';
 import {COLOR, HEIGHT, WIDTH} from './core/design';
-import {BEATS, Beat, MUSIC, TOTAL_FRAMES, f, faceFor, stockFor} from './core/timeline';
+import {BEATS, Beat, MUSIC, SFX, TOTAL_FRAMES, f, faceFor, stockFor} from './core/timeline';
 import {Transition, energy, transition} from './core/motion';
 import {StockLayer} from './layers/Stock';
 import {FaceLayer, FaceStrap} from './layers/Face';
@@ -127,11 +127,21 @@ const GraphicsTrack: React.FC = () => (
  */
 const MusicBed: React.FC = () => (MUSIC ? <Audio src={staticFile(MUSIC.src)} /> : null);
 
+/**
+ * The SFX bus.
+ *
+ * Already scheduled, ducked and levelled by bin/build.mjs — cue placement is
+ * derived from the aligned timeline, so each effect's *moment* sits on the cut
+ * rather than its file start. Played at unity for the same reason as the bed.
+ */
+const SfxBus: React.FC = () => (SFX ? <Audio src={staticFile(SFX.src)} /> : null);
+
 /** The finished video. */
 export const Master: React.FC = () => (
   <AbsoluteFill style={{backgroundColor: COLOR.bg}}>
     <Audio src={staticFile('voice.wav')} />
     <MusicBed />
+    <SfxBus />
     <PictureTrack />
     <CaptionTrack />
     <Vignette />

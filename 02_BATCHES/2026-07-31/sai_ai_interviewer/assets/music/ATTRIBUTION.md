@@ -9,7 +9,7 @@ every platform the video is posted to.
 |---|---|
 | Track | Long Note Two |
 | Artist | Kevin MacLeod |
-| Source | [incompetech.com](https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100420) |
+| Source | [Incompetech](https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100420) |
 | ISRC | USUAN1100420 |
 | Licence | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
 | Feel | Dark, Eerie, Mysterious, Suspenseful, Unnerving |

@@ -22,6 +22,13 @@ __pycache__/
 # Incompetech's catalogue, re-fetched weekly by bin/fetch-music.mjs
 00_ENGINE/v2/.cache/
 
+# Dropped-in music and SFX. Inputs, not source — the READMEs stay.
+00_ENGINE/v2/music-library/*
+!00_ENGINE/v2/music-library/README.md
+00_ENGINE/v2/sfx-library/*
+!00_ENGINE/v2/sfx-library/README.md
+**/assets/sfx/
+
 # Renders
 *.mp4
 *.mov
@@ -51,6 +58,7 @@ __pycache__/
 !**/assets/stock/ATTRIBUTION.md
 !**/assets/music/ATTRIBUTION.md
 !**/assets/music/music.json
+!**/MANIFEST.md
 !**/assets/MANIFEST.md
 !**/.env.example
 

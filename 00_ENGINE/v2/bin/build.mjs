@@ -24,6 +24,8 @@ import {dirname, join, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
 import {applyEnvelopeToPcm, buildEnvelope, describeEnvelope} from './lib/music.mjs';
+import {renderSfxBus, scheduleSfx} from './lib/sfx.mjs';
+import {renderSfx} from './lib/sfx-synth.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, '..');
@@ -51,6 +53,26 @@ const doRender = process.argv.includes('--render');
 
 const step = (n, label) => console.log(`\n\x1b[1m[${n}] ${label}\x1b[0m`);
 
+const RATE = 48000;
+const CH = 2;
+
+/** Decode any audio file to interleaved stereo floats. */
+const readPcm = (src) => {
+  const dec = spawnSync('ffmpeg', ['-nostdin', '-hide_banner', '-y', '-i', src, '-f', 'f32le', '-ac', String(CH), '-ar', String(RATE), '-'], {maxBuffer: 512 * 1024 * 1024});
+  if (dec.status !== 0) throw new Error(`ffmpeg decode failed for ${src}:\n${dec.stderr?.toString().slice(-1000)}`);
+  return new Float32Array(dec.stdout.buffer, dec.stdout.byteOffset, Math.floor(dec.stdout.byteLength / 4));
+};
+
+/** Write interleaved stereo floats to a 16-bit WAV. */
+const writePcm = (pcm, dest) => {
+  const enc = spawnSync(
+    'ffmpeg',
+    ['-nostdin', '-hide_banner', '-y', '-f', 'f32le', '-ar', String(RATE), '-ac', String(CH), '-i', '-', '-c:a', 'pcm_s16le', dest],
+    {input: Buffer.from(pcm.buffer, pcm.byteOffset, pcm.byteLength), maxBuffer: 512 * 1024 * 1024},
+  );
+  if (enc.status !== 0) throw new Error(`ffmpeg encode failed for ${dest}:\n${enc.stderr?.toString().slice(-1000)}`);
+};
+
 /**
  * Print the envelope into a copy of the bed, at sample resolution.
  *
@@ -58,19 +80,47 @@ const step = (n, label) => console.log(`\n\x1b[1m[${n}] ${label}\x1b[0m`);
  * plays and the bed the offline mix builds are the same waveform.
  */
 const duckBed = (src, dest, env) => {
-  const RATE = 48000;
-  const CH = 2;
-  const dec = spawnSync('ffmpeg', ['-nostdin', '-hide_banner', '-y', '-i', src, '-f', 'f32le', '-ac', String(CH), '-ar', String(RATE), '-'], {maxBuffer: 512 * 1024 * 1024});
-  if (dec.status !== 0) throw new Error(`ffmpeg decode failed:\n${dec.stderr?.toString().slice(-1000)}`);
-  const pcm = new Float32Array(dec.stdout.buffer, dec.stdout.byteOffset, Math.floor(dec.stdout.byteLength / 4));
+  const pcm = readPcm(src);
   const peak = applyEnvelopeToPcm(pcm, env, {rate: RATE, channels: CH});
-  const enc = spawnSync(
-    'ffmpeg',
-    ['-nostdin', '-hide_banner', '-y', '-f', 'f32le', '-ar', String(RATE), '-ac', String(CH), '-i', '-', '-c:a', 'pcm_s16le', dest],
-    {input: Buffer.from(pcm.buffer, pcm.byteOffset, pcm.byteLength), maxBuffer: 512 * 1024 * 1024},
-  );
-  if (enc.status !== 0) throw new Error(`ffmpeg encode failed:\n${enc.stderr?.toString().slice(-1000)}`);
+  writePcm(pcm, dest);
   return peak;
+};
+
+/**
+ * Where a cue's audio comes from.
+ *
+ * A file in `sfx-library/` named for the kind (`impact.wav`, or `impact-2.wav`
+ * for a variant) overrides the synthesised version. That is the upgrade path:
+ * the engine sounds finished with no assets at all, and any single effect can
+ * be swapped for a recorded one without touching code.
+ *
+ * A supplied file has no anchor metadata, so its transient is found by locating
+ * the first sample within 6 dB of its peak — which for a hit, a whoosh or a
+ * ping is the moment it is supposed to land on.
+ */
+const sfxLoader = (folder) => {
+  const dirs = [join(folder, 'assets', 'sfx'), join(ROOT, 'sfx-library')].filter((d) => existsSync(d));
+  return (cue) => {
+    for (const dir of dirs) {
+      for (const name of [`${cue.kind}-${(cue.variant ?? 0) + 1}`, cue.kind]) {
+        const hit = readdirSync(dir).find((f) => f.replace(/\.[^.]+$/, '') === name);
+        if (!hit) continue;
+        const pcm = readPcm(join(dir, hit));
+        let peak = 0;
+        for (let i = 0; i < pcm.length; i++) peak = Math.max(peak, Math.abs(pcm[i]));
+        const thresh = peak * 0.5;
+        let anchor = 0;
+        for (let i = 0; i < pcm.length; i += CH) {
+          if (Math.abs(pcm[i]) >= thresh) {
+            anchor = i / CH / RATE;
+            break;
+          }
+        }
+        return {pcm, anchor};
+      }
+    }
+    return renderSfx(cue.kind, {rate: RATE, variant: cue.variant ?? 0});
+  };
 };
 const run = (cmd, args, opts = {}) =>
   execFileSync(cmd, args, {stdio: 'inherit', cwd: ROOT, ...opts});
@@ -171,6 +221,7 @@ aligned._faceAvailable = faces;
 // curve — baking it into the timeline is what makes the two routes agree
 // instead of drifting into two slightly different mixes.
 rmSync(join(pub, 'music'), {recursive: true, force: true});
+rmSync(join(pub, 'sfx.wav'), {force: true});
 const bedFile = join(folder, 'assets', 'music', 'bed.wav');
 const wordsFile = join(folder, 'assets', 'words.json');
 if (existsSync(bedFile) && existsSync(wordsFile)) {
@@ -228,6 +279,51 @@ if (existsSync(bedFile) && existsSync(wordsFile)) {
   console.log(`   ducked bed peaks at ${aligned._music.duckedPeakDb} dBFS, out at ${env.endAt.toFixed(2)}s`);
 } else if (existsSync(bedFile)) {
   console.log('-- music bed found but no words.json; skipping (the duck needs the alignment)');
+}
+
+// --- SFX -------------------------------------------------------------------
+//
+// Placement is derived from the timeline rather than authored: which beat is
+// the retention beat, which one lifts, where the transitions are. Cues are
+// capped and spaced, because the failure mode of SFX in short-form is not too
+// few, it is one whoosh per cut until the ear stops hearing any of them.
+
+if (existsSync(wordsFile)) {
+  const script = JSON.parse(readFileSync(join(folder, 'script.json'), 'utf8'));
+  const {words} = JSON.parse(readFileSync(wordsFile, 'utf8'));
+  const {cfg, cues, dropped} = scheduleSfx({
+    beats: aligned.beats,
+    duration: aligned.duration,
+    sfx: script.sfx ?? {},
+  });
+
+  if (cues.length) {
+    const {bus, peak} = renderSfxBus({cues, cfg, words, duration: aligned.duration, rate: 48000, load: sfxLoader(folder)});
+    writePcm(bus, join(pub, 'sfx.wav'));
+
+    aligned._sfx = {
+      src: 'sfx.wav',
+      peakDb: Number((20 * Math.log10(peak || 1e-9)).toFixed(2)),
+      cues: cues.map((c) => ({
+        kind: c.kind,
+        at: Number(c.time.toFixed(3)),
+        placedAt: Number((c.placedAt ?? c.time).toFixed(3)),
+        variant: c.variant ?? 0,
+        why: c.why,
+      })),
+    };
+
+    console.log(`-- sfx: ${cues.length} cue${cues.length === 1 ? '' : 's'} (cap ${cfg.maxCount}), bus peak ${cfg.peakDb} dBFS`);
+    for (const c of cues) {
+      console.log(`   ${c.time.toFixed(2).padStart(6)}s  ${c.kind.padEnd(12)} ${c.why}`);
+    }
+    if (dropped.length) {
+      console.log(`   ${dropped.length} candidate${dropped.length === 1 ? '' : 's'} dropped, deliberately:`);
+      for (const d of dropped.slice(0, 6)) console.log(`     ${d.time.toFixed(2)}s ${d.kind} — ${d.why}`);
+    }
+  } else {
+    console.log('-- sfx: none scheduled');
+  }
 }
 
 writeFileSync(join(ROOT, 'src', 'timeline.json'), JSON.stringify(aligned, null, 2));

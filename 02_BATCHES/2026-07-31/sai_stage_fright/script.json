@@ -1,0 +1,366 @@
+{
+  "id": "sai_stage_fright",
+  "title": "They Can't See It",
+  "track": "SAI",
+  "pillar": "Confidence Building",
+  "targetDuration": 45,
+  "design": {
+    "accent": "#FFC94A",
+    "accent2": "#4AC7FF",
+    "ink": "#FFFFFF",
+    "bg": "#0B0A12",
+    "grain": 0.04,
+    "vignette": 0.38,
+    "aberration": 0.9
+  },
+  "_designNote": "Warm amber accent against a cool blue secondary, and a lighter grain and vignette than sai_ai_interviewer. That video was an investigation and looked like one; this one resolves into relief, so the frame is allowed to be brighter and the grade arc ends warm.",
+  "_voiceNote": "pace 1.0. Faceless, so the VO is the deliverable. Do not raise pace to fit — cut words instead.",
+  "voice": {
+    "speaker": "priya",
+    "pace": 1,
+    "lang": "en-IN"
+  },
+  "_musicNote": "Cheerful bed, deliberately the opposite register to sai_ai_interviewer's drone. Local file from the music library. Window picked by measurement: 30-76s is the flattest stretch (LRA 3.50) and has the lowest 300-3400Hz energy of any window, so it masks the VO least. bedLufs -24 rather than -26 because an upbeat bed is part of the feel here, not just atmosphere.",
+  "music": {
+    "file": "lifted-up",
+    "title": "Lifted Up",
+    "artist": "Hartzmann",
+    "source": "Pixabay",
+    "licence": "Pixabay Content License",
+    "licenceUrl": "https://pixabay.com/service/license-summary/",
+    "sourceUrl": "https://pixabay.com/music/",
+    "startAt": 30,
+    "bedLufs": -24,
+    "duckDb": 9,
+    "liftDb": 2,
+    "gapMin": 0.35,
+    "fadeIn": 1.2,
+    "fadeOut": 1.6,
+    "endAt": "lastWord"
+  },
+  "_sfxNote": "maxCount 6 rather than the default 5 because the retention beat takes two cues for one gesture — a riser resolving into a hit. That is five *moments*, which is the top of the range short-form tolerates before effects stop reading as punctuation.",
+  "sfx": {
+    "maxCount": 6,
+    "minSpacing": 2.2,
+    "peakDb": -10
+  },
+  "_note": "`say` is the spoken text and the alignment key — it must match AVATAR_SCRIPT.md word for word. Beat start/end are NOT authored here; bin/align.mjs derives them from whisper word timestamps and writes assets/beats.json.",
+  "beats": [
+    {
+      "id": "hook",
+      "say": "Nobody out there can see your heart pounding.",
+      "caption": "THEY CAN'T SEE IT",
+      "emphasis": [
+        "CAN'T"
+      ],
+      "template": "fullbleed",
+      "stock": {
+        "type": "video",
+        "query": "person waiting backstage nervous curtain theatre"
+      },
+      "motion": {
+        "push": 1.14,
+        "origin": "50% 45%"
+      },
+      "transitionIn": "none",
+      "grade": "cool"
+    },
+    {
+      "id": "inside",
+      "say": "You feel it inside. They only see outside.",
+      "caption": "INSIDE vs OUTSIDE",
+      "emphasis": [
+        "INSIDE",
+        "OUTSIDE"
+      ],
+      "template": "split",
+      "stock": {
+        "type": "video",
+        "query": "audience seated watching presentation auditorium"
+      },
+      "_graphicNote": "In the versus graphic `left` is always the struck side and `right` is always the side that builds from its steps — position is the contract, `state` is not read. The steps are what the audience actually perceives, which is the whole point of the beat.",
+      "graphic": {
+        "kind": "versus",
+        "left": {
+          "label": "WHAT YOU FEEL"
+        },
+        "right": {
+          "label": "WHAT THEY SEE",
+          "steps": [
+            "A PAUSE",
+            "A BREATH",
+            "NOTHING"
+          ]
+        }
+      },
+      "motion": {
+        "push": 1.08,
+        "origin": "50% 50%"
+      },
+      "transitionIn": "whip",
+      "grade": "cool"
+    },
+    {
+      "id": "name",
+      "say": "Psychologists call this the illusion of transparency.",
+      "caption": "ILLUSION OF TRANSPARENCY",
+      "emphasis": [
+        "ILLUSION"
+      ],
+      "template": "fullbleed",
+      "stock": {
+        "type": "video",
+        "query": "glass window reflection blurred light abstract"
+      },
+      "motion": {
+        "push": 1.1,
+        "origin": "50% 50%"
+      },
+      "transitionIn": "flash",
+      "grade": "accent"
+    },
+    {
+      "id": "tested",
+      "say": "Two psychologists tested it on live speeches.",
+      "caption": "THEY TESTED IT",
+      "template": "fullbleed",
+      "stock": {
+        "type": "video",
+        "query": "student giving presentation classroom podium"
+      },
+      "motion": {
+        "push": 1.12,
+        "origin": "50% 42%"
+      },
+      "transitionIn": "whip",
+      "grade": "cool"
+    },
+    {
+      "id": "result",
+      "say": "Speakers told this gave better speeches.",
+      "caption": "TOLD = BETTER",
+      "emphasis": [
+        "BETTER"
+      ],
+      "template": "statcard",
+      "stock": {
+        "type": "video",
+        "query": "audience applauding hands clapping warm light"
+      },
+      "motion": {
+        "push": 1.06,
+        "origin": "50% 50%"
+      },
+      "transitionIn": "zoomblur",
+      "grade": "cool"
+    },
+    {
+      "id": "rated",
+      "say": "Rated by the audience. Not by themselves.",
+      "caption": "BY THE AUDIENCE",
+      "emphasis": [
+        "AUDIENCE"
+      ],
+      "template": "slam",
+      "graphic": {
+        "kind": "waveform",
+        "intensity": 0.8
+      },
+      "transitionIn": "flash",
+      "grade": "accent"
+    },
+    {
+      "id": "only",
+      "say": "You are the only person in that room grading you.",
+      "caption": "THE ONLY ONE GRADING YOU",
+      "emphasis": [
+        "ONLY"
+      ],
+      "template": "fullbleed",
+      "stock": {
+        "type": "video",
+        "query": "empty auditorium seats soft light wide"
+      },
+      "motion": {
+        "push": 1.04,
+        "origin": "50% 48%"
+      },
+      "transitionIn": "zoomblur",
+      "grade": "cool",
+      "retentionBeat": true,
+      "_music": "Retention beat — the reframe lands here. The bed settles and the SFX scheduler puts a riser peaking on the cut with a hit resolving into it.",
+      "music": {
+        "mode": "settle"
+      }
+    },
+    {
+      "id": "wrong",
+      "say": "Here's what people get wrong.",
+      "caption": "THE PART PEOPLE GET WRONG",
+      "template": "fullbleed",
+      "stock": {
+        "type": "video",
+        "query": "person breathing deeply eyes closed calm"
+      },
+      "motion": {
+        "push": 1.1,
+        "origin": "50% 45%"
+      },
+      "transitionIn": "whip",
+      "grade": "cool"
+    },
+    {
+      "id": "calm",
+      "say": "Trying to calm down.",
+      "caption": "\"JUST CALM DOWN\"",
+      "emphasis": [
+        "CALM"
+      ],
+      "template": "slam",
+      "transitionIn": "flash",
+      "grade": "dark",
+      "hold": true,
+      "_music": "The one dip in an otherwise warm video. Bed out, hit on the cut, then nothing under it.",
+      "music": {
+        "mode": "hard"
+      }
+    },
+    {
+      "id": "travel",
+      "say": "Calm is a long way from panic.",
+      "caption": "PANIC → CALM IS FAR",
+      "emphasis": [
+        "LONG WAY"
+      ],
+      "template": "fullbleed",
+      "stock": {
+        "type": "video",
+        "query": "long empty road stretching distance horizon"
+      },
+      "motion": {
+        "push": 1.12,
+        "origin": "50% 55%"
+      },
+      "transitionIn": "whip",
+      "grade": "cool"
+    },
+    {
+      "id": "harvard",
+      "say": "Harvard research found a shorter trip.",
+      "caption": "A SHORTER TRIP",
+      "emphasis": [
+        "SHORTER"
+      ],
+      "template": "fullbleed",
+      "stock": {
+        "type": "video",
+        "query": "sunrise warm golden light over city morning"
+      },
+      "motion": {
+        "push": 1.1,
+        "origin": "50% 50%"
+      },
+      "transitionIn": "flash",
+      "grade": "warm",
+      "_music": "The turn. Everything from here is warm and the bed lifts with it.",
+      "music": {
+        "mode": "lift"
+      }
+    },
+    {
+      "id": "say",
+      "say": "Say I am excited, out loud.",
+      "caption": "\"I AM EXCITED\"",
+      "emphasis": [
+        "EXCITED"
+      ],
+      "template": "slam",
+      "graphic": {
+        "kind": "waveform",
+        "intensity": 1
+      },
+      "transitionIn": "flash",
+      "grade": "warm"
+    },
+    {
+      "id": "same",
+      "say": "Same racing heart. Different story about why.",
+      "caption": "SAME HEART. NEW STORY.",
+      "emphasis": [
+        "STORY"
+      ],
+      "template": "fullbleed",
+      "stock": {
+        "type": "video",
+        "query": "runner stretching before race energetic morning"
+      },
+      "motion": {
+        "push": 1.08,
+        "origin": "50% 45%"
+      },
+      "transitionIn": "whip",
+      "grade": "warm"
+    },
+    {
+      "id": "better",
+      "say": "They sang better, spoke better, scored higher.",
+      "caption": "IT WORKED THREE WAYS",
+      "template": "meters",
+      "graphic": {
+        "kind": "meters",
+        "items": [
+          {
+            "label": "SINGING",
+            "value": 0.8
+          },
+          {
+            "label": "SPEAKING",
+            "value": 0.74
+          },
+          {
+            "label": "MATH",
+            "value": 0.69
+          }
+        ]
+      },
+      "transitionIn": "zoomblur",
+      "grade": "warm"
+    },
+    {
+      "id": "practise",
+      "say": "Practise your first twenty seconds out loud, and listen back.",
+      "caption": "FIRST 20 SECONDS",
+      "emphasis": [
+        "OUT LOUD"
+      ],
+      "template": "steps",
+      "graphic": {
+        "kind": "steps",
+        "items": [
+          "YOUR FIRST 20 SECONDS",
+          "SAY IT OUT LOUD",
+          "LISTEN BACK ONCE"
+        ]
+      },
+      "transitionIn": "whip",
+      "grade": "warm"
+    },
+    {
+      "id": "close",
+      "say": "The room was never the problem.",
+      "caption": "NEVER THE ROOM",
+      "emphasis": [
+        "NEVER"
+      ],
+      "template": "endcard",
+      "graphic": {
+        "kind": "endcard",
+        "line": "SAI hears what they hear",
+        "sub": "practise out loud, get feedback on how you sound"
+      },
+      "transitionIn": "flash",
+      "grade": "warm",
+      "hold": true
+    }
+  ]
+}

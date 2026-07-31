@@ -52,6 +52,20 @@ export type MusicSpec = {
   duckedPeakDb: number;
 };
 
+/**
+ * The SFX bus, written by bin/build.mjs.
+ *
+ * One pre-mixed track rather than a cue per <Audio>: placement, ducking and
+ * level are all decided at build time from the aligned timeline, so the
+ * renderer just plays it. `cues` is carried for inspection — it is what the
+ * build logged, so a mix can be audited without re-deriving it.
+ */
+export type SfxSpec = {
+  src: string;
+  peakDb: number;
+  cues: {kind: string; at: number; placedAt: number; variant: number; why: string}[];
+};
+
 type Spec = {
   id: string;
   title: string;
@@ -64,6 +78,8 @@ type Spec = {
   _faceAvailable?: string[];
   /** Bed + per-frame volume curve. Absent means render without music. */
   _music?: MusicSpec;
+  /** Pre-mixed SFX bus. Absent means render without effects. */
+  _sfx?: SfxSpec;
 };
 
 const S = spec as unknown as Spec;
@@ -79,6 +95,9 @@ const FACES = new Set(S._faceAvailable ?? []);
 
 /** Null when the build produced no bed — the render simply has no music. */
 export const MUSIC: MusicSpec | null = S._music ?? null;
+
+/** Null when no cues were scheduled. */
+export const SFX: SfxSpec | null = S._sfx ?? null;
 
 export const f = (seconds: number) => Math.round(seconds * FPS);
 

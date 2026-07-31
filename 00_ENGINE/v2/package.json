@@ -14,6 +14,8 @@
     "render": "remotion render src/index.ts Master out/master.mp4 --concurrency=4",
     "master": "npm run render && node bin/master-audio.mjs",
     "mixdown": "node bin/master-audio.mjs --add-music",
+    "deliver": "node bin/deliver.mjs",
+    "avatar": "node bin/avatar-script.mjs",
     "captions": "remotion render src/index.ts CaptionsAlpha out/captions_alpha.mov --codec=prores --prores-profile=4444 --pixel-format=yuva444p10le --image-format=png",
     "graphics": "remotion render src/index.ts GraphicsAlpha out/graphics_alpha.mov --codec=prores --prores-profile=4444 --pixel-format=yuva444p10le --image-format=png"
   },

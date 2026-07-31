@@ -27,8 +27,8 @@
  */
 
 import {spawnSync} from 'node:child_process';
-import {existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync} from 'node:fs';
-import {dirname, join} from 'node:path';
+import {cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync} from 'node:fs';
+import {basename, dirname, isAbsolute, join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {applyEnvelopeToPcm, buildEnvelope, resolveMusicConfig} from './lib/music.mjs';
 
@@ -169,7 +169,96 @@ function score(track, terms, maxBpm) {
   return {s, hits, len, bpm};
 }
 
-const cat = await catalogue();
+// --- local files -----------------------------------------------------------
+//
+// A track you already have always wins over a search. Drop files into
+// 00_ENGINE/v2/music-library/ (or set MUSIC_LIBRARY, or give an absolute path)
+// and reference one as `music.file`. Everything downstream — the window, the
+// calibration, the duck, the attribution record — is identical either way; only
+// where the audio came from changes.
+
+const LIB_DIRS = [
+  process.env.MUSIC_LIBRARY,
+  join(ROOT, 'music-library'),
+  join(HERE, '..', '..', 'music-library'),
+].filter(Boolean);
+
+const AUDIO_EXT = /\.(mp3|wav|m4a|aac|flac|ogg|opus)$/i;
+
+/** Every audio file in the library dirs, deduped by resolved path. */
+function libraryFiles() {
+  const seen = new Map();
+  for (const dir of LIB_DIRS) {
+    if (!existsSync(dir)) continue;
+    for (const name of readdirSync(dir)) {
+      if (!AUDIO_EXT.test(name)) continue;
+      const p = join(dir, name);
+      if (!seen.has(p)) seen.set(p, {path: p, name});
+    }
+  }
+  return [...seen.values()];
+}
+
+/** Read whatever the file itself claims about title and artist. */
+function fileTags(path) {
+  const r = spawnSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration:format_tags=title,artist', '-of', 'json', path], {encoding: 'utf8'});
+  try {
+    const j = JSON.parse(r.stdout);
+    return {
+      title: j.format?.tags?.title ?? j.format?.tags?.TITLE ?? null,
+      artist: j.format?.tags?.artist ?? j.format?.tags?.ARTIST ?? null,
+      duration: Number(j.format?.duration ?? 0),
+    };
+  } catch {
+    return {title: null, artist: null, duration: 0};
+  }
+}
+
+/**
+ * Resolve `music.file` to a path on disk. Accepts an absolute path, a path
+ * relative to the variation, or a bare filename to look up in the library.
+ */
+function resolveLocalTrack(want) {
+  const tries = [
+    isAbsolute(want) ? want : null,
+    join(folder, want),
+    ...LIB_DIRS.map((d) => join(d, want)),
+  ].filter(Boolean);
+  for (const t of tries) if (existsSync(t)) return t;
+  // Last resort: match on basename, so "lifted-up" finds a longer real filename.
+  const stem = want.toLowerCase().replace(AUDIO_EXT, '');
+  const hit = libraryFiles().find((f) => f.name.toLowerCase().includes(stem));
+  return hit?.path ?? null;
+}
+
+const localWant = spec.music?.file ?? null;
+let localPath = null;
+if (localWant) {
+  localPath = resolveLocalTrack(localWant);
+  if (!localPath) {
+    console.error(`!! music.file "${localWant}" not found.`);
+    console.error(`   Looked in: ${LIB_DIRS.join(', ')}`);
+    const have = libraryFiles();
+    if (have.length) {
+      console.error('   Library currently holds:');
+      for (const f of have) console.error(`     ${f.name}`);
+    } else {
+      console.error('   The library is empty — drop audio files in and rerun.');
+    }
+    process.exit(1);
+  }
+}
+
+if (list && localWant === null && libraryFiles().length) {
+  console.log(`Local library (${libraryFiles().length} files) — reference one as music.file:`);
+  for (const f of libraryFiles()) {
+    const t = fileTags(f.path);
+    console.log(`  ${f.name}${t.title ? `   "${t.title}"${t.artist ? ` — ${t.artist}` : ''}` : ''}  ${t.duration ? t.duration.toFixed(0) + 's' : ''}`);
+  }
+  console.log('');
+}
+
+const cat = localPath ? [] : await catalogue();
 
 const usable = cat.filter((t) => {
   if (!t.filename || !t.filename.endsWith('.mp3')) return false;
@@ -187,7 +276,7 @@ const ranked = usable
   .map((t) => ({t, ...score(t, terms, maxBpm)}))
   .sort((a, b) => b.s - a.s || b.len - a.len);
 
-if (list) {
+if (list && !localPath) {
   console.log(`Catalogue: ${cat.length} pieces, ${usable.length} instrumental`);
   console.log(`Query: ${JSON.stringify(terms)}  maxBpm ${maxBpm}  need >= ${duration.toFixed(1)}s\n`);
   for (const r of ranked.slice(0, 25)) {
@@ -202,37 +291,74 @@ if (list) {
 // A pinned trackId is the reproducible path: once a bed is chosen it should not
 // move because the catalogue gained a better-scoring track next week.
 const wantId = pinned ?? spec.music?.trackId ?? null;
-const chosen = wantId
-  ? usable.find((t) => t.isrc === wantId || t.uuid === wantId)
-  : ranked[0]?.t;
+let chosen;
+let source;
 
-if (!chosen) {
-  console.error(`!! No track matched${wantId ? ` id ${wantId}` : ''}. Try: node bin/fetch-music.mjs ${folder} --list`);
-  process.exit(1);
-}
-if (wantId && VOCAL.test(String(chosen.instruments ?? ''))) {
-  console.error(`!! ${chosen.title} lists vocals (${chosen.instruments}) — that fights the VO. Pick another.`);
-  process.exit(1);
-}
-
-const slug = chosen.title.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-console.log(`-- ${chosen.title} — ${chosen.length}, bpm ${chosen.bpm || 'n/a'}, ${chosen.feel}`);
-console.log(`   ${chosen.instruments}`);
-
-// --- download --------------------------------------------------------------
-
-const mp3 = join(srcDir, `${slug}.mp3`);
-if (existsSync(mp3) && statSync(mp3).size > 100000 && !force) {
-  console.log(`  = ${slug}.mp3 (cached)`);
+if (localPath) {
+  const tags = fileTags(localPath);
+  const base = basename(localPath).replace(AUDIO_EXT, '');
+  chosen = {
+    title: spec.music?.title ?? tags.title ?? base,
+    artist: spec.music?.artist ?? tags.artist ?? null,
+    length: tags.duration,
+    feel: spec.music?.feel ?? '(local file)',
+    instruments: '(not declared)',
+    bpm: null,
+    isrc: null,
+    uuid: null,
+  };
+  source = 'local';
+  console.log(`-- ${chosen.title}${chosen.artist ? ` — ${chosen.artist}` : ''}  (local file)`);
+  console.log(`   ${localPath}`);
+  // A local file's licence cannot be inferred from the file, so it has to be
+  // stated. Better a loud reminder here than a silent gap in ATTRIBUTION.md.
+  if (!spec.music?.licence) {
+    console.log(`   ! no music.licence in script.json — recorded as UNVERIFIED. Set it before publishing.`);
+  }
 } else {
-  const url = DOWNLOAD + encodeURIComponent(chosen.filename);
-  const res = await fetch(url);
-  if (!res.ok) {
-    console.error(`!! download failed (${res.status}) for ${url}`);
+  chosen = wantId ? usable.find((t) => t.isrc === wantId || t.uuid === wantId) : ranked[0]?.t;
+  if (!chosen) {
+    console.error(`!! No track matched${wantId ? ` id ${wantId}` : ''}. Try: node bin/fetch-music.mjs ${folder} --list`);
     process.exit(1);
   }
-  writeFileSync(mp3, Buffer.from(await res.arrayBuffer()));
-  console.log(`  + ${slug}.mp3  ${(statSync(mp3).size / 1e6).toFixed(1)}MB`);
+  if (wantId && VOCAL.test(String(chosen.instruments ?? ''))) {
+    console.error(`!! ${chosen.title} lists vocals (${chosen.instruments}) — that fights the VO. Pick another.`);
+    process.exit(1);
+  }
+  source = 'incompetech';
+  console.log(`-- ${chosen.title} — ${chosen.length}, bpm ${chosen.bpm || 'n/a'}, ${chosen.feel}`);
+  console.log(`   ${chosen.instruments}`);
+}
+
+const slug = String(chosen.title).trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+// --- obtain the audio ------------------------------------------------------
+
+let mp3;
+if (localPath) {
+  // Copied in rather than referenced, so the variation stays self-contained and
+  // a rebuild does not depend on a file still sitting in Downloads.
+  mp3 = join(srcDir, basename(localPath));
+  if (existsSync(mp3) && statSync(mp3).size > 10000 && !force) {
+    console.log(`  = ${basename(mp3)} (cached)`);
+  } else {
+    cpSync(localPath, mp3);
+    console.log(`  + ${basename(mp3)}  ${(statSync(mp3).size / 1e6).toFixed(1)}MB (copied from ${dirname(localPath)})`);
+  }
+} else {
+  mp3 = join(srcDir, `${slug}.mp3`);
+  if (existsSync(mp3) && statSync(mp3).size > 100000 && !force) {
+    console.log(`  = ${slug}.mp3 (cached)`);
+  } else {
+    const url = DOWNLOAD + encodeURIComponent(chosen.filename);
+    const res = await fetch(url);
+    if (!res.ok) {
+      console.error(`!! download failed (${res.status}) for ${url}`);
+      process.exit(1);
+    }
+    writeFileSync(mp3, Buffer.from(await res.arrayBuffer()));
+    console.log(`  + ${slug}.mp3  ${(statSync(mp3).size / 1e6).toFixed(1)}MB`);
+  }
 }
 
 // --- trim, normalise, calibrate --------------------------------------------
@@ -352,16 +478,32 @@ if (existsSync(wordsFile) && existsSync(beatsFile)) {
 
 // --- record ----------------------------------------------------------------
 
-const credit = `"${chosen.title}" by Kevin MacLeod (incompetech.com) — licensed under ${LICENCE}: ${LICENCE_URL}`;
+// A local file carries no licence information that can be read off the audio,
+// so whatever script.json declares is what gets recorded — and if it declares
+// nothing, that is recorded too, loudly, rather than being left blank.
+const isLocal = source === 'local';
+const artist = isLocal ? (chosen.artist ?? 'unknown') : 'Kevin MacLeod';
+const licence = isLocal ? (spec.music?.licence ?? 'UNVERIFIED — set music.licence in script.json') : LICENCE;
+const licenceUrl = isLocal ? (spec.music?.licenceUrl ?? '') : LICENCE_URL;
+const sourceName = isLocal ? (spec.music?.source ?? 'local file') : 'Incompetech';
+const sourceUrl = isLocal ? (spec.music?.sourceUrl ?? '') : TRACK_PAGE + chosen.isrc;
+
+const credit = isLocal
+  ? spec.music?.credit ??
+    `"${chosen.title}"${chosen.artist ? ` by ${chosen.artist}` : ''}${sourceName !== 'local file' ? ` (${sourceName})` : ''}${licenceUrl ? ` — ${licence}: ${licenceUrl}` : ` — ${licence}`}`
+  : `"${chosen.title}" by Kevin MacLeod (incompetech.com) — licensed under ${LICENCE}: ${LICENCE_URL}`;
+
 const record = {
   title: chosen.title,
-  artist: 'Kevin MacLeod',
-  source: 'Incompetech',
-  sourceUrl: TRACK_PAGE + chosen.isrc,
+  artist,
+  source: sourceName,
+  sourceUrl,
+  originPath: isLocal ? localPath : null,
   isrc: chosen.isrc,
   uuid: chosen.uuid,
-  licence: LICENCE,
-  licenceUrl: LICENCE_URL,
+  licence,
+  licenceUrl,
+  licenceVerified: isLocal ? Boolean(spec.music?.licence) : true,
   credit,
   feel: chosen.feel,
   instruments: chosen.instruments,
@@ -381,33 +523,46 @@ const record = {
   bedLufsInMaster: ducked ? Number((ducked.lufs + masterGain).toFixed(2)) : null,
   duckedPeakDb: ducked ? Number(ducked.peakDb.toFixed(2)) : null,
   duration,
-  chosenBy: wantId ? 'pinned trackId' : `query ${JSON.stringify(terms)}`,
+  chosenBy: isLocal ? `local file ${basename(localPath)}` : wantId ? 'pinned trackId' : `query ${JSON.stringify(terms)}`,
 };
 writeFileSync(join(outDir, 'music.json'), JSON.stringify(record, null, 2) + '\n');
+
+const licenceLine = licenceUrl ? `[${licence}](${licenceUrl})` : licence;
+const creditHeader = record.licenceVerified
+  ? `**Credit is required by the licence.** Put this line in the video description on
+every platform the video is posted to.
+
+> ${credit}`
+  : `> ⚠️ **Licence not declared.** This bed came from a local file, and nothing in
+> the file states its terms. Set \`music.licence\` (and \`music.credit\` if one is
+> required) in \`script.json\` before this video is published anywhere.
+>
+> Provisional credit line: ${credit}`;
 
 writeFileSync(
   join(outDir, 'ATTRIBUTION.md'),
   `# Music attribution
 
-**Credit is required by the licence.** Put this line in the video description on
-every platform the video is posted to.
-
-> ${credit}
+${creditHeader}
 
 | Field | Value |
 |---|---|
 | Track | ${chosen.title} |
-| Artist | Kevin MacLeod |
-| Source | [incompetech.com](${TRACK_PAGE + chosen.isrc}) |
-| ISRC | ${chosen.isrc} |
-| Licence | [${LICENCE}](${LICENCE_URL}) |
+| Artist | ${artist} |
+| Source | ${sourceUrl ? `[${sourceName}](${sourceUrl})` : sourceName} |
+${isLocal ? `| Original file | \`${localPath}\` |\n` : `| ISRC | ${chosen.isrc} |\n`}| Licence | ${licenceLine} |
 | Feel | ${chosen.feel} |
 | Instruments | ${chosen.instruments} |
 | Bed file | ${verify.input_i} LUFS integrated, ${verify.input_tp} dBTP |
 | Bed in the master | ${record.bedLufsInMaster ?? 'not calibrated'} LUFS, ducked to the speech envelope |
 
-Selected by ${record.chosenBy}. Pin it in \`script.json\` as
-\`music.trackId: "${chosen.isrc}"\` so a rebuild cannot quietly choose differently.
+Selected by ${record.chosenBy}.${
+    isLocal
+      ? ` The audio was copied into \`assets/music/source/\`, so a rebuild does
+not depend on the original file still being where it was found.`
+      : ` Pin it in \`script.json\` as
+\`music.trackId: "${chosen.isrc}"\` so a rebuild cannot quietly choose differently.`
+  }
 `,
 );
 
