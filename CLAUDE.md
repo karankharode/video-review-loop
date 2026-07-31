@@ -69,6 +69,20 @@ master, regenerates stills and writes `MANIFEST.md` — which records the measur
 loudness, the SFX cue list and the music licence, so reviewing a video doesn't
 start with "which of these files is the final one?"
 
+**Every run is also registered in `05_OUTPUTS/`.** Same command, no extra step.
+The filename carries when, which track, which variation, how long, how loud and
+the commit it was built from:
+
+```
+2026-07-31_141205__SAI__sai_opus_websites__45.2s__-14.03LUFS__596b931.mp4
+```
+
+The variation folder answers *"what is the current cut?"* and overwrites itself.
+The register answers *"what did we produce, and when?"* — a different question,
+and one you cannot reconstruct later, because the previous cut is gone the moment
+you re-render. `05_OUTPUTS/INDEX.md` lists every run newest-first for sequential
+review. Videos there are gitignored; the index is not.
+
 **Don't hand-write `AVATAR_SCRIPT.md`.** `npm run avatar <variation>` generates it
 from `script.json`, so the verbatim-match contract can't drift; `--check` fails a
 build if someone edits one and not the other. It also runs the timing gate.
@@ -135,7 +149,15 @@ override. Full rules and levels in **`00_ENGINE/SOUND_DESIGN.md`**.
 | `00_ENGINE/ENGINE_CONFIG.md` | Tracks, Apify actors, render stack, cost |
 | `01_BRANDS/SAI/BRAND.md` | SAI voice + the news→SAI bridges. **Defers to the `sai-script-engine` skill — invoke it.** |
 | `01_BRANDS/NEWS/BRAND.md` | NEWS voice, topic filters, accuracy standard |
+| `00_ENGINE/SOUND_DESIGN.md` | Levels, the duck, SFX sparsity and placement |
 | `03_TOPICS/USED_TOPICS.md` | 30-day no-repeat. Match on substance, not wording. Append after every script. |
+
+**Posting copy is on demand, not part of the build.** Run `/posting-pack` (the
+skill in `.claude/skills/posting-pack/`) against the videos you're about to
+publish. It writes per-platform copy for Instagram, Shorts, LinkedIn, X,
+WhatsApp and the relevant communities, picks a thumbnail from the actual stills,
+and carries the claims-not-to-make list. Copy is written once a cut is final —
+regenerating it on every render would waste the work.
 
 Accuracy standard is the real constraint: **every factual claim carries a source URL in the script file.** Vendor/marketing blogs are not sources. Unverifiable → cut it or mark `[NEEDS SOURCE]` and flag at delivery.
 
@@ -146,6 +168,17 @@ Accuracy standard is the real constraint: **every factual claim carries a source
 **Sarvam TTS is non-deterministic.** The same line, same speaker, same pace returned 2.40s / 3.33s / 4.41s / 5.00s across four calls. Never predict a VO's length — measure it. This is *why* v2 aligns instead of authoring times.
 
 **Sarvam's rate varies wildly.** Measured 120 wpm on one script and 175 wpm on another, both at `pace 1.0`. The engine's "150 wpm" arithmetic is an estimate, not a fact. `pace 1.25` measured ~200 wpm — reads as an advert. For faceless videos the VO *is* the deliverable: use `pace 1.0` and cut words, never raise pace.
+
+**`temperature` is the only prosody control bulbul:v3 exposes.** 0.01–2.0,
+Sarvam's default 0.6; the engine defaults to 0.85 and `sai_opus_websites` uses
+0.95. Low is a flat recital, high leans into emphasis. `pitch` and `loudness`
+are **v2-only** and silently ignored on v3 — `tts.mjs` warns if a script sets
+them. Raising temperature also makes duration less repeatable, which matters
+because this engine measures rather than predicts.
+
+Measured: `pace 1.15` + `temperature 0.95` gave **174 wpm**, against 138–146 wpm
+at `pace 1.0`. Brisk and still not the ~200 wpm that `pace 1.25` produced and
+that reads as an advert.
 
 **The rate varies between calls on the *same* script, too.** `sai_stage_fright` measured 146 wpm, then 138 wpm on a regenerate of nearly the same text. So a target duration is a target, not a spec: cut once if you are well over, then accept what alignment measures. Chasing an exact length across regenerates is a treadmill, and each lap costs a TTS call and a whisper pass. `bin/avatar-script.mjs` reports the range rather than a single estimate for this reason.
 

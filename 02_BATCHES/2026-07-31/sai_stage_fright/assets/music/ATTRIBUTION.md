@@ -14,8 +14,8 @@ every platform the video is posted to.
 | Licence | [Pixabay Content License](https://pixabay.com/service/license-summary/) |
 | Feel | (local file) |
 | Instruments | (not declared) |
-| Bed file | -24.00 LUFS integrated, -13.24 dBTP |
-| Bed in the master | -24 LUFS, ducked to the speech envelope |
+| Bed file | -30.00 LUFS integrated, -19.24 dBTP |
+| Bed in the master | -30 LUFS, ducked to the speech envelope |
 
 Selected by local file lifted-up-hartzmann-main-version-41590-02-02.mp3. The audio was copied into `assets/music/source/`, so a rebuild does
 not depend on the original file still being where it was found.

@@ -24,9 +24,27 @@ any of the rest, because it only knows about sound that has already happened.
 | Element | Target | Why |
 |---|---|---|
 | Programme (the master) | **−14 LUFS**, ≤ −1.0 dBTP | What Instagram and YouTube normalise to. Louder just gets turned down and loses dynamics on the way. |
-| Music bed, as heard in the master | **−24 to −26 LUFS** | 10–12 LU under programme reads as atmosphere. Above that it competes; below it, nobody can tell it is there. |
+| Music bed, as heard in the master | **−30 LUFS** | 16 LU under programme. Present, not competing. |
 | SFX bus peak | **−10 dBFS** | Punctuation sits above the bed and below the voice. |
 | SFX under speech | **−5 dB** | Enough that a whoosh never fights a consonant; not so much that the cue disappears. |
+
+> The bed target was **−24 to −26** in the first cuts and it was audibly too
+> present on review. −30 is the default now. Treat −24 as the ceiling for a video
+> where the music is genuinely part of the feel, not the floor for atmosphere.
+
+### Which knob for which complaint
+
+These are easy to confuse and only one of them does what you want:
+
+| Complaint | Knob |
+|---|---|
+| "The music is too loud." | Lower **`bedLufs`**. |
+| "The music muddies the voice." | Raise **`duckDb`**. |
+
+Raising `duckDb` does **not** make the bed quieter overall. `bedLufs` is
+calibrated against the *ducked* result, so a deeper duck is compensated by a
+larger make-up gain and the gaps come up to match. It changes the contrast
+between speech and silence, not the level.
 
 **`bedLufs` means the level in the *master*, not the level of the file.** Three
 things sit between: the duck removes ~9 dB, and the master bus adds ~1–2 dB

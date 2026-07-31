@@ -40,13 +40,28 @@ export const MODES = {
   normal: {allowLift: true},
 };
 
+/**
+ * Two different complaints, two different knobs — they are easy to confuse and
+ * only one of them does what you want:
+ *
+ *   "The music is too loud."     → lower `bedLufs`.
+ *   "The music muddies the VO."  → raise `duckDb`.
+ *
+ * Raising `duckDb` does **not** make the bed quieter overall. `bedLufs` is
+ * calibrated against the *ducked* result, so a deeper duck is compensated by a
+ * larger make-up gain and the gaps simply come up to match. It changes the
+ * contrast between speech and silence, not the level.
+ */
 export const MUSIC_DEFAULTS = {
-  /** Integrated loudness the bed file is normalised to. 0 dB on the envelope. */
-  bedLufs: -26,
+  /**
+   * Integrated loudness of the bed as heard in the master. The main volume
+   * control. -30 sits it clearly under the voice; -24 is close to a music video.
+   */
+  bedLufs: -30,
   /** Attenuation applied while a word is sounding. */
-  duckDb: 9,
+  duckDb: 12,
   /** Boost applied in a gap long enough to notice. */
-  liftDb: 2,
+  liftDb: 1.5,
   /** Shorter silences than this are inside the phrasing, not between it. */
   gapMin: 0.35,
   /** Duck starts before the word so it is already down on the consonant. */

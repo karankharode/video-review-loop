@@ -87,5 +87,29 @@ const longCaptions = spec.beats.filter((b) => b.caption && b.caption.split(/\s+/
 if (longCaptions.length) {
   console.log(`   ! captions over 6 words (unreadable in 1s): ${longCaptions.map((b) => b.id).join(', ')}`);
 }
-const hookWords = spec.beats[0]?.say.split(/\s+/).length ?? 0;
-if (hookWords > 12) console.log(`   ! hook is ${hookWords} spoken words; the rule is 12`);
+
+// --- the promise rule ------------------------------------------------------
+//
+// See VARIATION_AXES.md. The first three seconds have to carry context *and* a
+// promise on every channel. Most of that is a judgement call, but the parts
+// that are mechanical are worth failing loudly, because a dull hook is the one
+// defect that costs the whole video and it is invisible in a shot table.
+
+const hook = spec.beats[0];
+if (hook) {
+  const hookWords = hook.say.split(/\s+/).length;
+  if (hookWords > 12) console.log(`   ! hook is ${hookWords} spoken words; the rule is 12`);
+  if (!hook.caption) console.log('   ! hook has no caption — the first 3s must carry on-screen text');
+
+  // A promise is a debt the rest of the video pays off. These are the shapes it
+  // usually takes in a spoken hook. Crude on purpose: it prompts a re-read, it
+  // does not certify anything.
+  const promise =
+    /\b(here'?s|this is|i'?ll|we'?ll|watch|why|how|what|proves?|proof|study|studies|research|found|in \d|three|two|five|actually|turns out|but|and there'?s)\b|—|\?|:/i;
+  if (!promise.test(hook.say)) {
+    console.log('   ! hook states a fact but promises nothing.');
+    console.log('     Cover everything after 3s: if what remains is merely true, the viewer has no reason to wait.');
+  }
+  const staticOpen = !hook.stock && !hook.graphic;
+  if (staticOpen) console.log('   ! hook has neither stock nor a graphic — the first 3s must be moving');
+}

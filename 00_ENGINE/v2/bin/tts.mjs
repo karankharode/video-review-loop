@@ -78,7 +78,20 @@ function concatWav(buffers) {
   return Buffer.concat([header, ...datas]);
 }
 
-async function synth(text, key, {speaker, lang, pace}) {
+/**
+ * One request to Sarvam.
+ *
+ * `temperature` is bulbul:v3's expressiveness control (0.01–2.0, Sarvam's
+ * default 0.6). Low values give a flat, predictable read; higher values add
+ * pitch variation and emotional colour. It is the only prosody control v3
+ * exposes — `pitch` and `loudness` are v2-only and are silently ignored here,
+ * so don't add them expecting an effect.
+ *
+ * Raising `temperature` also makes the read less repeatable, which matters
+ * because this engine measures the result rather than predicting it. Expect
+ * duration to move more between regenerates than it already does.
+ */
+async function synth(text, key, {speaker, lang, pace, temperature, model}) {
   const r = await fetch(API, {
     method: 'POST',
     headers: {'api-subscription-key': key, 'Content-Type': 'application/json'},
@@ -86,8 +99,9 @@ async function synth(text, key, {speaker, lang, pace}) {
       text,
       target_language_code: lang,
       speaker,
-      model: 'bulbul:v3',
+      model,
       pace,
+      ...(temperature === undefined ? {} : {temperature}),
       speech_sample_rate: 24000,
     }),
   });
@@ -105,7 +119,31 @@ if (!folder) {
 const force = process.argv.includes('--force');
 
 const spec = JSON.parse(readFileSync(join(folder, 'script.json'), 'utf8'));
-const voice = {speaker: 'priya', lang: 'en-IN', pace: 1.0, ...(spec.voice ?? {})};
+const voice = {
+  speaker: 'priya',
+  lang: 'en-IN',
+  model: 'bulbul:v3',
+  pace: 1.0,
+  // Sarvam's default is 0.6. 0.85 keeps the read recognisably the same voice
+  // while letting it lean into emphasis instead of reciting.
+  temperature: 0.85,
+  ...(spec.voice ?? {}),
+};
+
+// v3 ignores these; leaving them in a script implies a control that isn't there.
+for (const dead of ['pitch', 'loudness']) {
+  if (voice[dead] !== undefined && voice.model.startsWith('bulbul:v3')) {
+    console.log(`   ! voice.${dead} is a bulbul:v2 parameter and does nothing on ${voice.model}`);
+  }
+}
+if (voice.pace < 0.5 || voice.pace > 2) {
+  console.error(`!! voice.pace ${voice.pace} is outside Sarvam's 0.5-2.0 range.`);
+  process.exit(1);
+}
+if (voice.temperature !== undefined && (voice.temperature < 0.01 || voice.temperature > 2)) {
+  console.error(`!! voice.temperature ${voice.temperature} is outside Sarvam's 0.01-2.0 range.`);
+  process.exit(1);
+}
 
 const raw = readFileSync(join(folder, 'AVATAR_SCRIPT.md'), 'utf8');
 // Same hygiene guard as v1: every character in this file is spoken aloud.
@@ -124,7 +162,10 @@ if (existsSync(out) && !force) {
 
 const text = raw.trim();
 const pieces = chunk(text);
-console.log(`${text.length} chars, ${pieces.length} request(s), speaker=${voice.speaker} pace=${voice.pace}`);
+console.log(
+  `${text.length} chars, ${pieces.length} request(s), speaker=${voice.speaker} ` +
+    `pace=${voice.pace} temperature=${voice.temperature ?? 'default'} model=${voice.model}`,
+);
 
 const key = loadKey();
 const bufs = [];

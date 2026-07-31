@@ -1,0 +1,338 @@
+{
+  "id": "sai_opus_websites",
+  "title": "Five Minutes, One Prompt",
+  "track": "SAI",
+  "pillar": "Build in Public",
+  "targetDuration": 45,
+  "design": {
+    "accent": "#7C5CFF",
+    "accent2": "#00E0C6",
+    "ink": "#FFFFFF",
+    "bg": "#07060E",
+    "grain": 0.045,
+    "vignette": 0.42,
+    "aberration": 1.1
+  },
+  "_designNote": "Violet and teal — a builder's palette, distinct from sai_ai_interviewer's green/red investigation and sai_stage_fright's amber/blue warmth. Three videos, three looks, no batch-sameness.",
+  "_voiceNote": "pace 1.15 and temperature 0.95, a deliberate change from the earlier variations. This is a build-in-public demo, not an argument that needs room to land — brisk suits it, and higher temperature gives the emphasis some lift instead of a recital. Still well under the 1.25 that measured ~200 wpm and read as an advert.",
+  "voice": {
+    "speaker": "priya",
+    "pace": 1.15,
+    "temperature": 0.95,
+    "lang": "en-IN"
+  },
+  "_musicNote": "Track chosen by measurement, not by ear: at matched loudness 'Killing Time' puts 11 dB less energy in the 300-3400 Hz speech band than every other bright/driving candidate, and its 45-91s window has the flattest loudness range in the shortlist (LRA 2.0). Bright and grooving at 100 bpm, so it carries momentum without arguing with the VO. bedLufs -30 per the new default — the previous cut's bed was too present.",
+  "music": {
+    "query": "driving bright grooving electronic",
+    "trackId": "USUAN1100570",
+    "startAt": 45,
+    "maxBpm": 110,
+    "bedLufs": -30,
+    "duckDb": 12,
+    "liftDb": 1.5,
+    "gapMin": 0.35,
+    "fadeIn": 0.8,
+    "fadeOut": 1.4,
+    "endAt": "lastWord"
+  },
+  "_sfxNote": "A cue lands on frame 1 — the promise rule says three seconds of silence reads as a video that has not started. The rest are derived: riser into the retention beat, a hit on the held beat, a ping on the turn, whoosh into the end card.",
+  "sfx": {
+    "maxCount": 6,
+    "minSpacing": 2.0,
+    "peakDb": -10
+  },
+  "_note": "`say` is the spoken text and the alignment key — it must match AVATAR_SCRIPT.md word for word. Beat start/end are NOT authored here; bin/align.mjs derives them from whisper word timestamps.",
+  "_hookNote": "Promise rule (VARIATION_AXES.md): the first three seconds state what was built AND owe the viewer the prompt. Cover everything after 3s and a debt remains — that is the test.",
+  "beats": [
+    {
+      "id": "hook",
+      "say": "I built this scrolling site in five minutes. Here's the prompt.",
+      "caption": "5 MINUTES. ONE PROMPT.",
+      "emphasis": [
+        "5",
+        "PROMPT"
+      ],
+      "template": "fullbleed",
+      "stock": {
+        "type": "video",
+        "query": "designer scrolling website animation screen closeup"
+      },
+      "motion": {
+        "push": 1.16,
+        "origin": "50% 45%"
+      },
+      "transitionIn": "none",
+      "grade": "accent",
+      "sfx": [
+        {
+          "kind": "whoosh_rev",
+          "at": 0.02
+        }
+      ]
+    },
+    {
+      "id": "what",
+      "say": "Animated sections, scroll triggers, hover states. No template.",
+      "caption": "NO TEMPLATE",
+      "emphasis": [
+        "NO"
+      ],
+      "template": "fullbleed",
+      "stock": {
+        "type": "video",
+        "query": "colorful website landing page design bright screen"
+      },
+      "motion": {
+        "push": 1.1,
+        "origin": "50% 50%"
+      },
+      "transitionIn": "whip",
+      "grade": "cool"
+    },
+    {
+      "id": "tool",
+      "say": "One tool. Claude Opus five, in the terminal.",
+      "caption": "OPUS 5, IN THE TERMINAL",
+      "emphasis": [
+        "OPUS 5"
+      ],
+      "template": "fullbleed",
+      "stock": {
+        "type": "video",
+        "query": "code editor screen colorful syntax highlighting bright"
+      },
+      "motion": {
+        "push": 1.12,
+        "origin": "45% 50%"
+      },
+      "transitionIn": "flash",
+      "grade": "accent"
+    },
+    {
+      "id": "step1",
+      "say": "Step one. Describe the feeling, not the layout.",
+      "caption": "FEELING, NOT LAYOUT",
+      "emphasis": [
+        "FEELING"
+      ],
+      "template": "steps",
+      "graphic": {
+        "kind": "steps",
+        "items": [
+          "DESCRIBE THE FEELING",
+          "NAME THE SCROLL",
+          "ASK IT TO RUN"
+        ]
+      },
+      "transitionIn": "zoomblur",
+      "grade": "cool"
+    },
+    {
+      "id": "why1",
+      "say": "Say cinematic. Say editorial. It picks the type and the spacing.",
+      "caption": "\"CINEMATIC\" · \"EDITORIAL\"",
+      "template": "transcript",
+      "graphic": {
+        "kind": "transcript",
+        "lines": [
+          {
+            "text": "make it look nice",
+            "role": "a",
+            "mark": "weak"
+          },
+          {
+            "text": "cinematic, editorial, lots of air",
+            "role": "a",
+            "mark": "strong"
+          }
+        ]
+      },
+      "stock": {
+        "type": "video",
+        "query": "typography design screen closeup motion"
+      },
+      "transitionIn": "cut",
+      "grade": "cool"
+    },
+    {
+      "id": "step2",
+      "say": "Step two. Name the scroll behaviour out loud.",
+      "caption": "NAME THE SCROLL",
+      "emphasis": [
+        "SCROLL"
+      ],
+      "template": "fullbleed",
+      "stock": {
+        "type": "video",
+        "query": "smooth scrolling web page motion closeup"
+      },
+      "motion": {
+        "push": 1.08,
+        "origin": "50% 55%"
+      },
+      "transitionIn": "whip",
+      "grade": "cool"
+    },
+    {
+      "id": "why2",
+      "say": "Sections that fade up. A header that shrinks.",
+      "caption": "FADE UP · SHRINK",
+      "template": "fullbleed",
+      "stock": {
+        "type": "video",
+        "query": "clean white minimal web page scrolling bright"
+      },
+      "motion": {
+        "push": 1.06,
+        "origin": "50% 50%"
+      },
+      "transitionIn": "cut",
+      "grade": "cool"
+    },
+    {
+      "id": "step3",
+      "say": "Step three, and this is the one people skip.",
+      "caption": "THE STEP PEOPLE SKIP",
+      "emphasis": [
+        "SKIP"
+      ],
+      "template": "fullbleed",
+      "stock": {
+        "type": "video",
+        "query": "developer looking at laptop screen thinking night"
+      },
+      "motion": {
+        "push": 1.04,
+        "origin": "50% 48%"
+      },
+      "transitionIn": "zoomblur",
+      "grade": "dark",
+      "retentionBeat": true,
+      "_music": "Retention beat — the open loop from the hook starts paying off here. Riser peaks on the cut, hit resolves into it.",
+      "music": {
+        "mode": "settle"
+      }
+    },
+    {
+      "id": "run",
+      "say": "Ask it to open the page and look at it.",
+      "caption": "ASK IT TO LOOK",
+      "emphasis": [
+        "LOOK"
+      ],
+      "template": "slam",
+      "graphic": {
+        "kind": "waveform",
+        "intensity": 0.9
+      },
+      "transitionIn": "flash",
+      "grade": "accent",
+      "hold": true,
+      "_music": "The line the whole video exists for. Bed out, hit on the cut, nothing under it.",
+      "music": {
+        "mode": "hard"
+      }
+    },
+    {
+      "id": "fixes",
+      "say": "It opens a browser, sees what's broken, and fixes it.",
+      "caption": "IT SEES WHAT'S BROKEN",
+      "emphasis": [
+        "SEES"
+      ],
+      "template": "fullbleed",
+      "stock": {
+        "type": "video",
+        "query": "web browser window loading interface screen"
+      },
+      "motion": {
+        "push": 1.1,
+        "origin": "50% 45%"
+      },
+      "transitionIn": "whip",
+      "grade": "warm",
+      "_music": "The turn — this is the payoff the hook promised.",
+      "music": {
+        "mode": "lift"
+      }
+    },
+    {
+      "id": "notes",
+      "say": "You are not writing code. You are giving notes.",
+      "caption": "YOU'RE GIVING NOTES",
+      "emphasis": [
+        "NOTES"
+      ],
+      "template": "split",
+      "graphic": {
+        "kind": "versus",
+        "left": {
+          "label": "WRITING CODE"
+        },
+        "right": {
+          "label": "GIVING NOTES",
+          "steps": [
+            "TIGHTER",
+            "SLOWER",
+            "MORE AIR"
+          ]
+        }
+      },
+      "transitionIn": "cut",
+      "grade": "warm"
+    },
+    {
+      "id": "caveat",
+      "say": "It will not guess your brand colours.",
+      "caption": "IT WON'T GUESS",
+      "template": "fullbleed",
+      "stock": {
+        "type": "video",
+        "query": "colour palette swatches design closeup"
+      },
+      "motion": {
+        "push": 1.08,
+        "origin": "50% 50%"
+      },
+      "transitionIn": "whip",
+      "grade": "cool"
+    },
+    {
+      "id": "fix",
+      "say": "Paste the palette. Two lines. Done.",
+      "caption": "PASTE THE PALETTE",
+      "emphasis": [
+        "TWO LINES"
+      ],
+      "template": "fullbleed",
+      "stock": {
+        "type": "video",
+        "query": "hands typing keyboard fast closeup dark"
+      },
+      "motion": {
+        "push": 1.12,
+        "origin": "50% 55%"
+      },
+      "transitionIn": "flash",
+      "grade": "warm"
+    },
+    {
+      "id": "close",
+      "say": "Five minutes to a first version you can react to.",
+      "caption": "SOMETHING TO REACT TO",
+      "emphasis": [
+        "REACT"
+      ],
+      "template": "endcard",
+      "graphic": {
+        "kind": "endcard",
+        "line": "Describe it. Run it. Give notes.",
+        "sub": "the whole loop, in five minutes"
+      },
+      "transitionIn": "flash",
+      "grade": "warm",
+      "hold": true
+    }
+  ],
+  "_stockNote": "Queries for `what`, `tool` and `why2` were reselected after measuring mean frame luma: the originals rendered at 6-21 out of 255, i.e. effectively black frames carrying only a caption. A video about visible animated websites cannot have its brightest claim land on an empty frame."
+}

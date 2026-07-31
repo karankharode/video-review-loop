@@ -1,7 +1,7 @@
 # They Can't See It — delivered output
 
 **Variation:** `sai_stage_fright` · **Track:** SAI · **Pillar:** Confidence Building
-**Duration:** 49.50s · **Frame:** 1080×1920
+**Duration:** 49.43s · **Frame:** 1080×1920
 
 Built by the v2 engine. Everything here regenerates from `script.json` plus the
 API keys — see `00_ENGINE/v2`. Media files are gitignored; this manifest is not.
@@ -10,17 +10,17 @@ API keys — see `00_ENGINE/v2`. Media files are gitignored; this manifest is no
 
 | File | Size | What it is |
 |---|---|---|
-| `master_final.mp4` | 43.8 MB | **The deliverable.** Mastered, scored, ready to post. |
+| `master_final.mp4` | 43.7 MB | **The deliverable.** Mastered, scored, ready to post. |
 | `still_*.png` | — | 6 frames for thumbnail selection |
 
 ## Audio, measured
 
 | Measure | Value | Target |
 |---|---|---|
-| Integrated loudness | **-14.02 LUFS** | −14 (IG / YouTube normalisation) |
-| True peak | **-1.49 dBTP** | ≤ −1.0 |
-| Loudness range | 2.20 LU | — |
-| Music bed in the mix | -24 LUFS | -24 |
+| Integrated loudness | **-14.00 LUFS** | −14 (IG / YouTube normalisation) |
+| True peak | **-1.56 dBTP** | ≤ −1.0 |
+| Loudness range | 2.40 LU | — |
+| Music bed in the mix | -30 LUFS | -30 |
 | SFX bus peak | -10 dBFS | -10 |
 
 ## Music

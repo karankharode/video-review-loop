@@ -24,7 +24,7 @@
  */
 
 import {spawnSync} from 'node:child_process';
-import {cpSync, existsSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync} from 'node:fs';
+import {cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync} from 'node:fs';
 import {basename, dirname, join, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
@@ -223,4 +223,87 @@ node bin/deliver.mjs
 `,
 );
 console.log('   + MANIFEST.md');
+
+// --- the run register ------------------------------------------------------
+//
+// Every finished render also lands in 05_OUTPUTS/ under a timestamped name, so
+// there is one folder you can open and watch the whole history in order.
+//
+// The variation folder answers "what is the current cut of this video?" and
+// overwrites itself every render. This answers "what did we produce, and
+// when?" — a different question, and one you cannot reconstruct afterwards
+// because the previous cut is gone the moment you re-render.
+//
+// The filename carries enough to review without opening anything else: when,
+// which track, which variation, how long, how loud, and the commit it was built
+// from.
+
+if (!process.argv.includes('--no-register')) {
+  const REG = resolve(ROOT, '..', '..', '05_OUTPUTS');
+  mkdirSync(REG, {recursive: true});
+
+  const d = new Date();
+  const p2 = (n) => String(n).padStart(2, '0');
+  const stamp =
+    `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}` +
+    `_${p2(d.getHours())}${p2(d.getMinutes())}${p2(d.getSeconds())}`;
+
+  const sha = (() => {
+    const r = spawnSync('git', ['rev-parse', '--short', 'HEAD'], {cwd: ROOT, encoding: 'utf8'});
+    const dirty = spawnSync('git', ['status', '--porcelain'], {cwd: ROOT, encoding: 'utf8'}).stdout?.trim();
+    const s = (r.stdout ?? '').trim();
+    return s ? `${s}${dirty ? '-dirty' : ''}` : 'nogit';
+  })();
+
+  const safe = (s) => String(s).replace(/[^A-Za-z0-9._-]+/g, '-').replace(/^-|-$/g, '');
+  const name =
+    `${stamp}__${safe(spec.track ?? 'NA')}__${safe(spec.id)}` +
+    `__${dur.toFixed(1)}s__${l?.input_i ?? 'na'}LUFS__${safe(sha)}.mp4`;
+
+  cpSync(master, join(REG, name));
+  console.log(`   + 05_OUTPUTS/${name}`);
+
+  // Rebuild the index from the directory itself rather than appending, so a
+  // deleted file disappears from the list instead of leaving a dead row.
+  const runs = readdirSync(REG)
+    .filter((f) => f.endsWith('.mp4'))
+    .sort()
+    .reverse()
+    .map((f) => {
+      const [ts, track, id, durs, lufs, shaExt] = f.replace(/\.mp4$/, '').split('__');
+      const [date, time] = (ts ?? '').split('_');
+      const hhmm = time ? `${time.slice(0, 2)}:${time.slice(2, 4)}` : '';
+      return {f, date, hhmm, track, id, durs, lufs, sha: shaExt};
+    });
+
+  writeFileSync(
+    join(REG, 'INDEX.md'),
+    `# Output register
+
+Every finished render, newest first. One row per run — re-rendering a variation
+adds a row rather than replacing one, so this is the record of what was actually
+produced and when.
+
+Written by \`00_ENGINE/v2/bin/deliver.mjs\`. The \`.mp4\` files here are
+gitignored; this index is not.
+
+**Filename format:**
+\`<date>_<time>__<track>__<variation>__<duration>__<loudness>__<commit>.mp4\`
+
+| # | Date | Time | Track | Variation | Length | Loudness | Built from |
+|---|---|---|---|---|---|---|---|
+${runs
+  .map(
+    (r, i) =>
+      `| ${runs.length - i} | ${r.date ?? '?'} | ${r.hhmm} | ${r.track ?? '?'} | \`${r.id ?? '?'}\` | ${r.durs ?? '?'} | ${r.lufs ?? '?'} | \`${r.sha ?? '?'}\` |`,
+  )
+  .join('\n')}
+
+${runs.length} run${runs.length === 1 ? '' : 's'}. A \`-dirty\` suffix on the commit
+means the working tree had uncommitted changes when it was built.
+`,
+  );
+  console.log(`   + 05_OUTPUTS/INDEX.md (${runs.length} runs)`);
+}
+
 console.log(`-- ${copied.length} file${copied.length === 1 ? '' : 's'} + ${stills.length} stills delivered`);

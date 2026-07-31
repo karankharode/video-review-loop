@@ -14,8 +14,8 @@ every platform the video is posted to.
 | Licence | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
 | Feel | Dark, Eerie, Mysterious, Suspenseful, Unnerving |
 | Instruments | Basses, Violins, Piano |
-| Bed file | -26.00 LUFS integrated, -7.55 dBTP |
-| Bed in the master | -26 LUFS, ducked to the speech envelope |
+| Bed file | -30.00 LUFS integrated, -11.55 dBTP |
+| Bed in the master | -30.01 LUFS, ducked to the speech envelope |
 
 Selected by pinned trackId. Pin it in `script.json` as
 `music.trackId: "USUAN1100420"` so a rebuild cannot quietly choose differently.
