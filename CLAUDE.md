@@ -1,0 +1,105 @@
+# Video Review Loop — agent brief
+
+Short-form vertical video pipeline. Two content tracks, two render engines.
+**Read this before exploring — it exists so you don't re-derive the architecture.**
+
+---
+
+## Use v2. It is the current engine.
+
+`00_ENGINE/v2/` — alignment-driven. **Beats are declared as text and resolved to time by forced alignment against the real audio**, not authored by hand. That one inversion is the whole design.
+
+```bash
+cd 00_ENGINE/v2
+node bin/build.mjs ../../02_BATCHES/<date>/<variation>   # tts -> align -> stock -> link
+npm run master      # out/master.mp4
+npm run captions    # out/captions_alpha.mov   (ProRes 4444 + alpha, for Resolve)
+npm run graphics    # out/graphics_alpha.mov
+```
+
+`00_ENGINE/pipeline/` + `00_ENGINE/remotion/` are **v1** — the older Kallaway split-frame path, kept because `v1_dendrite_waterjet` was built on it and is awaiting a shoot. Don't extend v1. Don't copy patterns from it.
+
+### v2 file map
+
+| Path | Role |
+|---|---|
+| `bin/tts.mjs` | One continuous VO via Sarvam bulbul:v3 |
+| `bin/align.mjs` | whisper `--word_timestamps` → `assets/words.json` + `assets/beats.json` |
+| `bin/fetch-stock.mjs` | Pexels, one clip per beat + presenters → `assets/stock/`, `assets/face/` |
+| `bin/build.mjs` | Runs the above, copies into `public/` and `src/timeline.json` |
+| `src/core/design.ts` | All colour, type, grade tokens. Change looks here, nowhere else. |
+| `src/core/motion.ts` | Easing, springs, transitions (`flash`/`whip`/`zoomblur`), energy curve |
+| `src/core/timeline.ts` | Loads aligned beats; `stockFor()` / `faceFor()` return null when a file is missing |
+| `src/layers/` | `Captions` (word-locked), `Stock`, `Face`, `Graphics`, `Look` |
+
+### Variation folder contract
+
+```
+02_BATCHES/<date>/<slug>/
+  script.json        beats: {id, say, caption, emphasis, stock, graphic, face, transitionIn, grade}
+  AVATAR_SCRIPT.md   spoken words ONLY — must match every beat's `say` verbatim
+  SCRIPT.md          sources, fact-check, shot table (times are a readout, not authored)
+  assets/            voice.wav, beats.json, words.json, stock/, face/   (all gitignored)
+```
+
+---
+
+## Binding rules — read before writing any script
+
+| File | Governs |
+|---|---|
+| `00_ENGINE/VARIATION_AXES.md` | Axis spread, anti-slop list, timing gate, differentiation check |
+| `00_ENGINE/ENGINE_CONFIG.md` | Tracks, Apify actors, render stack, cost |
+| `01_BRANDS/SAI/BRAND.md` | SAI voice + the news→SAI bridges. **Defers to the `sai-script-engine` skill — invoke it.** |
+| `01_BRANDS/NEWS/BRAND.md` | NEWS voice, topic filters, accuracy standard |
+| `03_TOPICS/USED_TOPICS.md` | 30-day no-repeat. Match on substance, not wording. Append after every script. |
+
+Accuracy standard is the real constraint: **every factual claim carries a source URL in the script file.** Vendor/marketing blogs are not sources. Unverifiable → cut it or mark `[NEEDS SOURCE]` and flag at delivery.
+
+---
+
+## Hard-won facts — these cost real time to discover
+
+**Sarvam TTS is non-deterministic.** The same line, same speaker, same pace returned 2.40s / 3.33s / 4.41s / 5.00s across four calls. Never predict a VO's length — measure it. This is *why* v2 aligns instead of authoring times.
+
+**Sarvam's rate varies wildly.** Measured 120 wpm on one script and 175 wpm on another, both at `pace 1.0`. The engine's "150 wpm" arithmetic is an estimate, not a fact. `pace 1.25` measured ~200 wpm — reads as an advert. For faceless videos the VO *is* the deliverable: use `pace 1.0` and cut words, never raise pace.
+
+**This machine's ffmpeg has no `drawtext`** (built without freetype). Draw text with Pillow and composite. `00_ENGINE/pipeline/kinetic.py` still uses drawtext and will fail here.
+
+**libx264 + yuv420p needs even dimensions.** A 859px-tall panel fails; round to 860.
+
+**Alpha renders need `--image-format=png`.** `remotion.config.ts` sets JPEG globally for the master. Without the override: *"Pixel format was set to 'yuva444p10le' but the image format is not PNG."* Verify with `ffprobe ... stream=pix_fmt` — want `yuva444p12le`.
+
+**Remotion cannot stat the filesystem mid-render.** A missing clip 404s and kills the whole render. `build.mjs` writes `_stockAvailable` / `_faceAvailable` into the timeline; `stockFor()`/`faceFor()` return null so the beat falls back. Never bypass this.
+
+**Face framing uses `objectPosition`, not `transformOrigin`.** `cover` centres the crop, which on a tall selfie clip lands on the chin. `transformOrigin` moves the scale pivot, not the crop.
+
+**whisper `turbo` takes ~6 min per 45s file** on this CPU. Alignment is cached on a hash of beat `say` text + audio size. Use `--model base.en` while iterating. `--force` to re-run.
+
+**Never edit source with `sed`.** It silently corrupted `align.mjs` into a binary file — node still ran it, but the cache comparison broke and `grep` couldn't even show the contents. Use whole-file writes.
+
+**Never `pkill -f <word>`** where the word appears in your own command. It matches your own shell and hangs the turn.
+
+---
+
+## Keys
+
+`00_ENGINE/pipeline/.env` (gitignored): `SARVAM_API_KEY`, `PEXELS_API_KEY`.
+Both scripts also read the environment. Never echo a key into chat or a commit.
+
+---
+
+## What is deliberately not in git
+
+Renders (`*.mp4`, `*.mov`), stock assets, `voice.wav`, `beats.json`, `node_modules/`, `.venv/`, `public/`. All regenerable from `script.json` + the two keys, and the ProRes overlays alone are 600 MB — well past GitHub's 100 MB/file cap.
+
+**A fresh clone needs:** `npm install` in `00_ENGINE/v2`, a `.env`, then `node bin/build.mjs <variation>`.
+
+---
+
+## Working style that keeps this cheap
+
+- Read this file and the one or two rule files that apply. Don't sweep the repo.
+- Change looks in `design.ts`, motion in `motion.ts`. Nowhere else.
+- Check `assets/beats.json` for real timings rather than re-running alignment.
+- Verify renders by extracting 3 stills, not by re-rendering variants.

@@ -1,0 +1,22 @@
+{
+  "accent": "0x4CC9F0",
+  "bg_a": "0x05080F",
+  "bg_b": "0x101C2E",
+  "plates": [
+    {"name": "g1_years",        "kind": "years",     "years": [2016, 2018, 2020, 2022, 2024, 2026]},
+    {"name": "g2_chemistry",    "kind": "chemistry"},
+    {"name": "g3_pressure",     "kind": "statement", "main": "PRESSURE", "sub": "NOT CHEMISTRY"},
+    {"name": "g4_cutaway",      "kind": "cutaway"},
+    {"name": "g5_hardness",     "kind": "hardness"},
+    {"name": "g6_freeze",       "kind": "freeze"},
+    {"name": "g7_cryo",         "kind": "cryo"},
+    {"name": "g8_crack",        "kind": "crack"},
+    {"name": "g9_split",        "kind": "split"},
+    {"name": "g10_waterjet",    "kind": "waterjet"},
+    {"name": "g11_short",       "kind": "short"},
+    {"name": "g12_engineering", "kind": "word",      "old": "CHEMISTRY", "new": "ENGINEERING"},
+    {"name": "g13_fixes",       "kind": "fixes",     "items": ["TOUGHER CERAMIC", "PROTECTIVE COATINGS", "STEERED MICRO-VOIDS"]},
+    {"name": "g14_bookend",     "kind": "statement", "main": "PRESSURE", "sub": "NEVER THE RECIPE"},
+    {"name": "g15_savebait",    "kind": "statement", "main": "SAVE THIS", "sub": "NATURE 652 (2026)", "size": 120}
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "video-loop-v2",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Alignment-driven kinetic video engine. Beats are declared as text and resolved to time by forced alignment against the real audio, so captions land on the word instead of near it.",
+  "scripts": {
+    "tts": "node bin/tts.mjs",
+    "align": "node bin/align.mjs",
+    "stock": "node bin/fetch-stock.mjs",
+    "build": "node bin/build.mjs",
+    "studio": "remotion studio src/index.ts",
+    "master": "remotion render src/index.ts Master out/master.mp4 --concurrency=4",
+    "captions": "remotion render src/index.ts CaptionsAlpha out/captions_alpha.mov --codec=prores --prores-profile=4444 --pixel-format=yuva444p10le --image-format=png",
+    "graphics": "remotion render src/index.ts GraphicsAlpha out/graphics_alpha.mov --codec=prores --prores-profile=4444 --pixel-format=yuva444p10le --image-format=png"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.502",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "remotion": "4.0.502"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "typescript": "^5.6.3"
+  }
+}

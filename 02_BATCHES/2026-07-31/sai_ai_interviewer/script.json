@@ -1,0 +1,390 @@
+{
+  "id": "sai_ai_interviewer",
+  "title": "It's Not Watching Your Face",
+  "track": "SAI",
+  "targetDuration": 45,
+  "design": {
+    "accent": "#00E5A0",
+    "accent2": "#FF2E63",
+    "ink": "#FFFFFF",
+    "bg": "#05070C",
+    "grain": 0.055,
+    "vignette": 0.5,
+    "aberration": 1.4
+  },
+  "_voiceNote": "pace 1.0 deliberately. This is a faceless variation, so the VO is the deliverable, not a guide track — 1.25 measured at ~200 wpm, which reads as an ad. The v1 engine used 1.25 only because its VO was a stopwatch for on-camera delivery.",
+  "voice": {
+    "speaker": "priya",
+    "pace": 1,
+    "lang": "en-IN"
+  },
+  "_note": "`say` is the spoken text and the alignment key — it must match AVATAR_SCRIPT.md word for word. Beat start/end are NOT authored here; bin/align.mjs derives them from whisper word timestamps and writes assets/beats.json.",
+  "beats": [
+    {
+      "id": "hook",
+      "say": "The AI interview isn't watching your face.",
+      "caption": "NOT YOUR FACE",
+      "emphasis": [
+        "NOT",
+        "FACE"
+      ],
+      "template": "fullbleed",
+      "stock": {
+        "type": "video",
+        "query": "woman using laptop at night dark room"
+      },
+      "motion": {
+        "push": 1.14,
+        "origin": "50% 42%"
+      },
+      "transitionIn": "none",
+      "grade": "cool",
+      "face": {
+        "asset": "presenter_a",
+        "mode": "band"
+      }
+    },
+    {
+      "id": "stopped",
+      "say": "It stopped doing that in 2021.",
+      "caption": "STOPPED IN 2021",
+      "emphasis": [
+        "2021"
+      ],
+      "template": "fullbleed",
+      "stock": {
+        "type": "video",
+        "query": "facial recognition scanning technology"
+      },
+      "motion": {
+        "push": 1.1,
+        "origin": "50% 50%"
+      },
+      "transitionIn": "flash",
+      "grade": "cold",
+      "fx": "glitchOut"
+    },
+    {
+      "id": "hirevue",
+      "say": "HireVue pulled facial scoring from its product.",
+      "caption": "HIREVUE, 2021",
+      "emphasis": [
+        "HIREVUE"
+      ],
+      "template": "fullbleed",
+      "stock": {
+        "type": "video",
+        "query": "server room data center blue lights"
+      },
+      "motion": {
+        "push": 1.12,
+        "origin": "40% 50%",
+        "pan": "right"
+      },
+      "transitionIn": "whip",
+      "grade": "cool"
+    },
+    {
+      "id": "quarter",
+      "say": "Their own numbers: your face added a quarter of one percent.",
+      "caption": "0.25%",
+      "emphasis": [
+        "0.25%"
+      ],
+      "template": "statcard",
+      "graphic": {
+        "kind": "counter",
+        "to": 0.25,
+        "suffix": "%",
+        "decimals": 2,
+        "label": "OF THE PREDICTION",
+        "sub": "HIREVUE'S OWN RESEARCH"
+      },
+      "stock": {
+        "type": "video",
+        "query": "abstract dark particles slow motion"
+      },
+      "transitionIn": "zoomblur",
+      "grade": "dark"
+    },
+    {
+      "id": "whatscoring",
+      "say": "So what is it scoring?",
+      "caption": "SO WHAT IS IT SCORING?",
+      "template": "fullbleed",
+      "stock": {
+        "type": "video",
+        "query": "sound wave audio visualization dark"
+      },
+      "motion": {
+        "push": 1.08,
+        "origin": "50% 50%"
+      },
+      "transitionIn": "whip",
+      "grade": "dark"
+    },
+    {
+      "id": "yourwords",
+      "say": "Your words.",
+      "caption": "YOUR WORDS",
+      "emphasis": [
+        "WORDS"
+      ],
+      "template": "slam",
+      "graphic": {
+        "kind": "waveform",
+        "intensity": 1
+      },
+      "transitionIn": "flash",
+      "grade": "accent",
+      "hold": true,
+      "face": {
+        "asset": "presenter_a",
+        "mode": "pip"
+      }
+    },
+    {
+      "id": "shape",
+      "say": "Did you answer the question. Did your answer have a shape.",
+      "caption": "DID IT HAVE A SHAPE",
+      "emphasis": [
+        "SHAPE"
+      ],
+      "template": "transcript",
+      "graphic": {
+        "kind": "transcript",
+        "lines": [
+          {
+            "text": "Tell me about yourself.",
+            "role": "q"
+          },
+          {
+            "text": "So basically I am... um... from Pune...",
+            "role": "a",
+            "mark": "weak"
+          },
+          {
+            "text": "I'm a final-year CS student. Three projects. One shipped.",
+            "role": "a",
+            "mark": "strong"
+          }
+        ]
+      },
+      "stock": {
+        "type": "video",
+        "query": "typing keyboard closeup dark"
+      },
+      "transitionIn": "cut",
+      "grade": "cool"
+    },
+    {
+      "id": "paceum",
+      "say": "And in a lot of setups, your pace, your hesitation, and every um.",
+      "caption": "PACE · PAUSES · UM",
+      "emphasis": [
+        "UM"
+      ],
+      "template": "meters",
+      "graphic": {
+        "kind": "meters",
+        "items": [
+          {
+            "label": "PACE",
+            "value": 0.72
+          },
+          {
+            "label": "HESITATION",
+            "value": 0.44
+          },
+          {
+            "label": "FILLER",
+            "value": 0.86
+          }
+        ]
+      },
+      "stock": {
+        "type": "video",
+        "query": "audio editing waveform screen"
+      },
+      "transitionIn": "cut",
+      "grade": "dark"
+    },
+    {
+      "id": "mirror",
+      "say": "So the thing you've been rehearsing in the mirror isn't scored.",
+      "caption": "NOT THE MIRROR",
+      "emphasis": [
+        "NOT"
+      ],
+      "template": "fullbleed",
+      "stock": {
+        "type": "video",
+        "query": "person looking at mirror reflection thoughtful"
+      },
+      "motion": {
+        "push": 1.05,
+        "origin": "50% 45%"
+      },
+      "transitionIn": "zoomblur",
+      "grade": "cold",
+      "retentionBeat": true,
+      "face": {
+        "asset": "presenter_b",
+        "mode": "band"
+      }
+    },
+    {
+      "id": "nobody",
+      "say": "The thing nobody practises is.",
+      "caption": "NOBODY PRACTISES IT",
+      "template": "fullbleed",
+      "stock": {
+        "type": "reuse",
+        "from": "mirror"
+      },
+      "motion": {
+        "push": 1.02,
+        "origin": "50% 45%"
+      },
+      "transitionIn": "none",
+      "grade": "cold",
+      "hold": true
+    },
+    {
+      "id": "goodnews",
+      "say": "Which is the good news.",
+      "caption": "THAT'S GOOD NEWS",
+      "emphasis": [
+        "GOOD"
+      ],
+      "template": "fullbleed",
+      "stock": {
+        "type": "video",
+        "query": "warm sunlight window morning"
+      },
+      "motion": {
+        "push": 1.1,
+        "origin": "50% 50%"
+      },
+      "transitionIn": "flash",
+      "grade": "warm",
+      "face": {
+        "asset": "presenter_a",
+        "mode": "pip"
+      }
+    },
+    {
+      "id": "trainable",
+      "say": "You can't train your face. You can train an answer's shape.",
+      "caption": "SHAPE IS TRAINABLE",
+      "emphasis": [
+        "TRAINABLE"
+      ],
+      "template": "split",
+      "graphic": {
+        "kind": "versus",
+        "left": {
+          "label": "YOUR FACE",
+          "state": "struck"
+        },
+        "right": {
+          "label": "ANSWER SHAPE",
+          "state": "build",
+          "steps": [
+            "CLAIM",
+            "EVIDENCE",
+            "RESULT"
+          ]
+        }
+      },
+      "stock": {
+        "type": "video",
+        "query": "student writing in notebook studying desk"
+      },
+      "transitionIn": "cut",
+      "grade": "warm"
+    },
+    {
+      "id": "record",
+      "say": "Pick one question. Record yourself answering it. Play it back once.",
+      "caption": "RECORD ONE ANSWER",
+      "emphasis": [
+        "ONE"
+      ],
+      "template": "steps",
+      "graphic": {
+        "kind": "steps",
+        "items": [
+          "PICK ONE QUESTION",
+          "RECORD IT",
+          "PLAY IT BACK ONCE"
+        ]
+      },
+      "stock": {
+        "type": "video",
+        "query": "smartphone recording voice memo desk"
+      },
+      "transitionIn": "whip",
+      "grade": "warm"
+    },
+    {
+      "id": "hearums",
+      "say": "You'll hear the ums before you hear anything else.",
+      "caption": "YOU'LL HEAR THEM",
+      "emphasis": [
+        "HEAR"
+      ],
+      "template": "fullbleed",
+      "graphic": {
+        "kind": "waveform",
+        "intensity": 0.7,
+        "markFiller": true
+      },
+      "stock": {
+        "type": "video",
+        "query": "headphones listening audio dark"
+      },
+      "motion": {
+        "push": 1.08,
+        "origin": "50% 50%"
+      },
+      "transitionIn": "cut",
+      "grade": "cool"
+    },
+    {
+      "id": "close",
+      "say": "That's the part the machine is actually listening to.",
+      "caption": "SAVE THIS",
+      "emphasis": [
+        "SAVE"
+      ],
+      "template": "endcard",
+      "graphic": {
+        "kind": "endcard",
+        "line": "SAI scores spoken answers",
+        "sub": "real-time feedback on how you sound"
+      },
+      "stock": {
+        "type": "video",
+        "query": "young professional smiling laptop office"
+      },
+      "transitionIn": "zoomblur",
+      "grade": "accent",
+      "hold": true,
+      "face": {
+        "asset": "presenter_a",
+        "mode": "band"
+      }
+    }
+  ],
+  "presenters": [
+    {
+      "name": "presenter_a",
+      "query": "young woman talking to camera portrait indoor"
+    },
+    {
+      "name": "presenter_b",
+      "query": "man face portrait looking at camera close up"
+    }
+  ]
+}

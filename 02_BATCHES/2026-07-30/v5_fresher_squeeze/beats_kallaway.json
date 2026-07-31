@@ -1,0 +1,56 @@
+{
+  "accent": "0xFFD400",
+  "bg_a": "0x0A0E16",
+  "bg_b": "0x1A2438",
+  "duration": 60.0,
+  "layout": {
+    "top_ratio": 0.55,
+    "rule_h": 5,
+    "safe_bottom": 250,
+    "safe_side": 48
+  },
+  "visuals": [
+    {"start": 0.0, "end": 3.0, "asset": "stills/counter_plate.png", "mode": "counter", "counter_from": 600000, "counter_to": 520000, "overlay": "6,00,000", "punch": true, "pan": "diag"},
+    {"start": 3.0, "end": 6.0, "asset": "stills/applications.png", "mode": "kenburns", "punch": true, "pan": "down"},
+    {"start": 6.0, "end": 9.5, "asset": "stills/counter_plate.png", "mode": "counter", "counter_from": 600000, "counter_to": 120000, "overlay": "6,00,000 → 1,20,000", "punch": true, "pan": "center"},
+    {"start": 9.5, "end": 13.2, "asset": "stills/counter_plate.png", "mode": "stat", "overlay": "−80%", "sub": "FY22 → FY25", "punch": true, "pan": "center"},
+    {"start": 13.2, "end": 15.2, "asset": "stills/offer_letter.png", "mode": "kenburns", "punch": true, "pan": "up"},
+    {"start": 15.2, "end": 17.1, "asset": "stills/calendar.png", "mode": "kenburns", "punch": true, "pan": "left"},
+    {"start": 17.1, "end": 20.3, "asset": "stills/empty_desk.png", "mode": "kenburns", "punch": true, "pan": "right"},
+    {"start": 20.3, "end": 23.3, "asset": "stills/office_glass.png", "mode": "kenburns", "punch": true, "pan": "diag"},
+    {"start": 23.3, "end": 32.7, "asset": "stills/locked_hold.png", "mode": "hold", "hold": true, "pan": "center"},
+    {"start": 32.7, "end": 36.7, "asset": "stills/empty_chairs.png", "mode": "kenburns", "punch": true, "pan": "left"},
+    {"start": 36.7, "end": 39.1, "asset": "stills/closed_door.png", "mode": "kenburns", "punch": true, "pan": "up"},
+    {"start": 39.1, "end": 44.7, "asset": "stills/one_door.png", "mode": "kenburns", "punch": true, "pan": "diag"},
+    {"start": 44.7, "end": 48.3, "asset": "stills/empty_desk.png", "mode": "kenburns", "punch": true, "pan": "right"},
+    {"start": 48.3, "end": 52.3, "asset": "stills/three_questions.png", "mode": "kenburns", "punch": true, "pan": "down"},
+    {"start": 52.3, "end": 56.2, "asset": "stills/voice_memo.png", "mode": "kenburns", "punch": true, "pan": "center"},
+    {"start": 56.2, "end": 60.0, "asset": "stills/save_bait.png", "mode": "hold", "hold": true, "pan": "center"}
+  ],
+  "faces": [
+    {"start": 0.0, "end": 6.0, "asset": "face/hook.mp4", "hold": true},
+    {"start": 23.3, "end": 32.7, "asset": "face/market.mp4", "hold": true},
+    {"start": 56.2, "end": 60.0, "asset": "face/close.mp4", "hold": true}
+  ],
+  "captions": [
+    {"start": 0.0, "end": 2.0, "text": "APPLIED EVERYWHERE"},
+    {"start": 2.0, "end": 3.8, "text": "THINKING IT'S YOU"},
+    {"start": 3.8, "end": 6.0, "text": "IT'S NOT YOU", "highlight": ["NOT", "YOU"], "accent_all": false},
+    {"start": 6.0, "end": 8.2, "text": "FY22 · 6,00,000"},
+    {"start": 8.2, "end": 10.5, "text": "FY25 · 1,20,000"},
+    {"start": 10.5, "end": 13.2, "text": "80% GONE", "highlight": ["80%"]},
+    {"start": 13.2, "end": 17.1, "text": "SEVEN MONTHS", "highlight": ["SEVEN", "MONTHS"]},
+    {"start": 17.1, "end": 20.3, "text": "NOT A VERDICT"},
+    {"start": 20.3, "end": 23.3, "text": "SMALLER BENCH"},
+    {"start": 23.3, "end": 26.0, "text": "MARKET CONDITION", "highlight": ["MARKET"]},
+    {"start": 26.0, "end": 29.5, "text": "NOT A CHARACTER FLAW", "highlight": ["NOT", "CHARACTER", "FLAW"]},
+    {"start": 29.5, "end": 32.7, "text": "SO I WILL"},
+    {"start": 32.7, "end": 36.7, "text": "SOMETHING CHANGED"},
+    {"start": 36.7, "end": 39.1, "text": "FEWER ROLES"},
+    {"start": 39.1, "end": 44.7, "text": "ONE CONVERSATION", "highlight": ["ONE", "CONVERSATION"]},
+    {"start": 44.7, "end": 48.3, "text": "HEADCOUNT ISN'T YOURS"},
+    {"start": 48.3, "end": 52.3, "text": "PICK 3 QUESTIONS"},
+    {"start": 52.3, "end": 56.2, "text": "SAY IT · RECORD · LISTEN"},
+    {"start": 56.2, "end": 60.0, "text": "THIS PART IS YOURS", "highlight": ["YOURS"]}
+  ]
+}

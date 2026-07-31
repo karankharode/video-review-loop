@@ -1,0 +1,33 @@
+{
+  "_note": "Six contiguous face segments covering the full 50s. Karan is on camera throughout — these mark where the SETUP changes, not where he appears. Contiguous coverage is why the bottom of frame is never empty.",
+  "hook": {
+    "setup": "A",
+    "beat": "HOOK",
+    "line": "Solid-state batteries have been two years away for ten years. Everyone assumed the holdup was chemistry."
+  },
+  "reveal": {
+    "setup": "B",
+    "beat": "THE REVEAL",
+    "line": "It's not chemistry. It's pressure. ... So the lithium should lose."
+  },
+  "locked": {
+    "setup": "B",
+    "beat": "LOCKED - DO NOT MOVE",
+    "line": "It doesn't."
+  },
+  "mechanism": {
+    "setup": "B",
+    "beat": "THE MECHANISM",
+    "line": "Researchers froze one mid-failure ... like a waterjet through rock. That's the short circuit."
+  },
+  "turn": {
+    "setup": "A",
+    "beat": "THE TURN",
+    "line": "Not new chemistry. Better engineering. Tougher ceramic. Coatings. And tiny deliberate voids."
+  },
+  "close": {
+    "setup": "C",
+    "beat": "CLOSE + DEAD HOLD",
+    "line": "The problem was never the recipe. It was the pressure."
+  }
+}

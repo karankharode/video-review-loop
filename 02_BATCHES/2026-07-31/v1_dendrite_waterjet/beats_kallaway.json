@@ -1,0 +1,56 @@
+{
+  "accent": "0x4CC9F0",
+  "bg_a": "0x05080F",
+  "bg_b": "0x101C2E",
+  "duration": 50.0,
+  "layout": {
+    "top_ratio": 0.55,
+    "rule_h": 5,
+    "safe_bottom": 250,
+    "safe_side": 48
+  },
+  "visuals": [
+    {"start": 0.0,  "end": 4.0,  "asset": "stills/g1_years.png",       "mode": "kenburns",      "punch": true, "pan": "diag"},
+    {"start": 4.0,  "end": 6.6,  "asset": "stills/g2_chemistry.png",   "mode": "kenburns", "punch": true, "pan": "down"},
+    {"start": 6.6,  "end": 9.2,  "asset": "stills/g3_pressure.png",    "mode": "kenburns",      "punch": true, "pan": "center"},
+    {"start": 9.2,  "end": 12.8, "asset": "stills/g4_cutaway.png",     "mode": "kenburns", "punch": true, "pan": "right"},
+    {"start": 12.8, "end": 16.4, "asset": "stills/g5_hardness.png",    "mode": "kenburns", "punch": true, "pan": "left"},
+    {"start": 16.4, "end": 18.9, "asset": "stills/g5_hardness.png",    "mode": "kenburns", "punch": true, "pan": "up"},
+    {"start": 18.9, "end": 20.3, "asset": "stills/g6_freeze.png",      "mode": "hold",     "hold": true,  "pan": "center"},
+    {"start": 20.3, "end": 22.7, "asset": "stills/g7_cryo.png",        "mode": "kenburns", "punch": true, "pan": "center"},
+    {"start": 22.7, "end": 27.5, "asset": "stills/g8_crack.png",       "mode": "kenburns", "punch": true, "pan": "diag"},
+    {"start": 27.5, "end": 30.8, "asset": "stills/g9_split.png",       "mode": "kenburns", "punch": true, "pan": "center"},
+    {"start": 30.8, "end": 35.2, "asset": "stills/g10_waterjet.png",   "mode": "kenburns", "punch": true, "pan": "left"},
+    {"start": 35.2, "end": 37.2, "asset": "stills/g11_short.png",      "mode": "kenburns", "punch": true, "pan": "center"},
+    {"start": 37.2, "end": 39.6, "asset": "stills/g12_engineering.png","mode": "kenburns",      "punch": true, "pan": "center"},
+    {"start": 39.6, "end": 44.8, "asset": "stills/g13_fixes.png",      "mode": "kenburns", "punch": true, "pan": "down"},
+    {"start": 44.8, "end": 48.8, "asset": "stills/g14_bookend.png",    "mode": "kenburns",      "punch": true, "pan": "center"},
+    {"start": 48.8, "end": 50.0, "asset": "stills/g15_savebait.png",   "mode": "hold",     "hold": true,  "pan": "center"}
+  ],
+  "faces": [
+    {"start": 0.0,  "end": 6.6,  "asset": "face/hook.mp4",      "hold": true},
+    {"start": 6.6,  "end": 18.9, "asset": "face/reveal.mp4",    "hold": true},
+    {"start": 18.9, "end": 20.3, "asset": "face/locked.mp4",    "hold": true},
+    {"start": 20.3, "end": 37.2, "asset": "face/mechanism.mp4", "hold": true},
+    {"start": 37.2, "end": 44.8, "asset": "face/turn.mp4",      "hold": true},
+    {"start": 44.8, "end": 50.0, "asset": "face/close.mp4",     "hold": true}
+  ],
+  "captions": [
+    {"start": 0.0,  "end": 4.0,  "text": "2 YEARS AWAY",           "highlight": ["2", "YEARS"]},
+    {"start": 4.0,  "end": 6.6,  "text": "THE HOLDUP: CHEMISTRY?"},
+    {"start": 6.8,  "end": 9.2,  "text": "IT'S PRESSURE",          "highlight": ["PRESSURE"]},
+    {"start": 9.2,  "end": 12.8, "text": "LITHIUM MUST CROSS"},
+    {"start": 12.8, "end": 16.4, "text": "CERAMIC IS HARDER",      "highlight": ["HARDER"]},
+    {"start": 16.4, "end": 18.9, "text": "SO LITHIUM LOSES"},
+    {"start": 18.9, "end": 20.3, "text": "IT DOESN'T",             "highlight": ["DOESN'T"]},
+    {"start": 20.3, "end": 22.7, "text": "FROZEN MID-FAILURE",     "kicker": "MAX PLANCK · NATURE"},
+    {"start": 22.7, "end": 27.5, "text": "IT GETS TRAPPED",        "highlight": ["TRAPPED"]},
+    {"start": 27.5, "end": 30.8, "text": "SPLITS FROM INSIDE",     "highlight": ["INSIDE"]},
+    {"start": 30.8, "end": 35.2, "text": "LIKE A WATERJET",        "highlight": ["WATERJET"]},
+    {"start": 35.2, "end": 37.2, "text": "THAT'S THE SHORT"},
+    {"start": 37.2, "end": 39.6, "text": "NOT CHEMISTRY. ENGINEERING.", "highlight": ["ENGINEERING."]},
+    {"start": 39.6, "end": 44.8, "text": "3 FIXES",                "highlight": ["3"]},
+    {"start": 44.8, "end": 48.8, "text": "NEVER THE RECIPE",       "highlight": ["NEVER"]},
+    {"start": 48.8, "end": 50.0, "text": "SAVE THIS"}
+  ]
+}

@@ -1,0 +1,51 @@
+# Secrets — never commit
+**/.env
+!**/.env.example
+
+# Dependencies
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+
+# Generated assets. All of this rebuilds from script.json + the two API keys,
+# and the ProRes overlays alone are ~600MB against GitHub's 100MB/file cap.
+**/assets/stock/*.mp4
+**/assets/face/*.mp4
+**/assets/*.wav
+**/assets/beats.json
+**/assets/words.json
+**/voice.wav
+
+# Renders
+*.mp4
+*.mov
+*.wav
+00_ENGINE/*/out/
+00_ENGINE/*/public/
+
+# Remotion writes the active variation's timeline here on every build
+00_ENGINE/v2/src/timeline.json
+00_ENGINE/remotion/src/timeline.json
+**/.active-variation
+
+# Stills and scratch frames
+**/still_*.png
+**/chk_*.png
+**/f_*.png
+**/g_*.png
+**/h_*.png
+**/s_*.png
+**/*_still.png
+
+# v1 legacy binary plates — regenerable via make_placeholders.py / make_face_plates.py
+02_BATCHES/*/*/assets/stills/*.png
+02_BATCHES/*/*/assets/*.jpg
+
+# Keep these despite the rules above
+!**/assets/stock/ATTRIBUTION.md
+!**/assets/MANIFEST.md
+!**/.env.example
+
+# OS
+.DS_Store

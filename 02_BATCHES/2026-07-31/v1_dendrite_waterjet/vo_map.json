@@ -1,0 +1,20 @@
+{
+  "note": "Spoken lines with their beat starts. Mirrors AVATAR_SCRIPT.md line for line and SCRIPT.md's shot table. Used to build a beat-locked scratch guide track before the shoot.",
+  "lines": [
+    {"start": 0.0,  "text": "Solid-state batteries have been two years away for ten years."},
+    {"start": 4.0,  "text": "Everyone assumed the holdup was chemistry."},
+    {"start": 6.8,  "text": "It's not chemistry. It's pressure."},
+    {"start": 9.2,  "text": "Inside one, lithium has to cross a ceramic wall."},
+    {"start": 12.8, "text": "That ceramic is harder than the lithium touching it."},
+    {"start": 16.4, "text": "So the lithium should lose."},
+    {"start": 18.9, "text": "It doesn't."},
+    {"start": 20.3, "text": "Researchers froze one mid-failure and looked."},
+    {"start": 22.7, "text": "The lithium finds a crack already there, fills it, and can't escape."},
+    {"start": 27.5, "text": "Pressure builds. The ceramic splits from the inside."},
+    {"start": 30.8, "text": "Soft metal splitting hard stone. Like a waterjet through rock."},
+    {"start": 35.2, "text": "That's the short circuit."},
+    {"start": 37.2, "text": "Not new chemistry. Better engineering."},
+    {"start": 39.6, "text": "Tougher ceramic. Coatings. And tiny deliberate voids that steer the crack somewhere harmless."},
+    {"start": 44.8, "text": "The problem was never the recipe. It was the pressure."}
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "accent": "0xFFD166",
+  "bg_a": "0x0B0F1A",
+  "bg_b": "0x2A1230",
+  "beats": [
+    {"start": 0.0,  "end": 3.5,  "text": "Nobody banned it",            "size": 118, "wrap": 12, "kicker": "Spider-Man - India cut"},
+    {"start": 3.5,  "end": 8.0,  "text": "One kiss cut. Three words muted.", "size": 88, "wrap": 15, "kicker": "8 seconds gone"},
+    {"start": 8.0,  "end": 13.0, "text": "That is not a ban",           "size": 104, "wrap": 12, "kicker": "it is a price"},
+    {"start": 13.0, "end": 19.0, "text": "India has an adult certificate", "size": 82, "wrap": 15, "accent_line": 1},
+    {"start": 19.0, "end": 24.0, "text": "The Odyssey took it. Zero cuts.", "size": 84, "wrap": 15, "kicker": "A certificate"},
+    {"start": 24.0, "end": 29.5, "text": "Spider-Man wanted 13+",       "size": 96, "wrap": 13, "kicker": "UA 13+"},
+    {"start": 29.5, "end": 35.0, "text": "Traded. Not taken.",          "size": 122, "wrap": 11, "kicker": "for a bigger opening"}
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "accent": "0xFFB000",
+  "bg_a": "0x08111F",
+  "bg_b": "0x182A46",
+  "beats": [
+    {"start": 0.0, "end": 3.2, "text": "Applied everywhere", "size": 120, "wrap": 12, "kicker": "Still waiting"},
+    {"start": 3.2, "end": 6.0, "text": "It's not you", "size": 132, "wrap": 12, "box": true},
+    {"start": 6.0, "end": 9.8, "text": "6,00,000 freshers", "size": 112, "wrap": 12, "kicker": "FY22"},
+    {"start": 9.8, "end": 13.2, "text": "1,20,000", "size": 156, "wrap": 12, "kicker": "FY25 · 80% gone", "box": true},
+    {"start": 13.2, "end": 17.1, "text": "Seven months", "size": 142, "wrap": 12, "kicker": "Offer ≠ joining date", "box": true},
+    {"start": 17.1, "end": 20.3, "text": "Silence is not a verdict", "size": 102, "wrap": 13},
+    {"start": 20.3, "end": 23.3, "text": "A smaller bench", "size": 126, "wrap": 12, "kicker": "Not personal"},
+    {"start": 23.3, "end": 28.3, "text": "It's a market condition. Not a character flaw.", "size": 96, "wrap": 19, "box": true, "hold": true},
+    {"start": 28.3, "end": 32.7, "text": "Nobody tells you", "size": 124, "wrap": 12, "kicker": "So I will"},
+    {"start": 32.7, "end": 36.7, "text": "Something changed", "size": 120, "wrap": 12},
+    {"start": 36.7, "end": 39.1, "text": "Fewer roles. Same number of you.", "size": 100, "wrap": 15},
+    {"start": 39.1, "end": 44.7, "text": "One conversation", "size": 120, "wrap": 12, "kicker": "No redo", "box": true},
+    {"start": 44.7, "end": 48.3, "text": "Headcount isn't yours", "size": 108, "wrap": 14},
+    {"start": 48.3, "end": 52.3, "text": "Pick 3 questions", "size": 126, "wrap": 12, "kicker": "Your part starts here"},
+    {"start": 52.3, "end": 56.2, "text": "Say it. Record it. Listen back.", "size": 102, "wrap": 14},
+    {"start": 56.2, "end": 60.0, "text": "This part is yours", "size": 116, "wrap": 13, "kicker": "Save this", "box": true, "hold": true}
+  ]
+}
