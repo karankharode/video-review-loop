@@ -104,7 +104,30 @@ Each variation ships with a complete render package so rendering is mechanical:
 | **Stills / thumbnails** | FLUX.1-schnell (Apache 2.0) | Free | |
 | **Captions** | Whisper (`whisper.cpp` runs on Apple Silicon) or Sarvam **Saaras v3** | Free / ₹30 per hour | Saaras for Indic and code-mixed audio, Whisper for English. |
 | **Assembly** | FFmpeg | Free | Scripted, not manual. |
-| **Music** | Pixabay Music, Free Music Archive, YouTube Audio Library | Free | Check per-track attribution terms. |
+| **Music** | Incompetech (v2 engine), Pixabay Music, Free Music Archive, YouTube Audio Library | Free | Check per-track attribution terms. Incompetech is **CC BY — the credit line is required**, see below. |
+
+#### Incompetech, and why it was added to this list
+
+`00_ENGINE/v2/bin/fetch-music.mjs` searches Incompetech (Kevin MacLeod), which
+was not on the original approved list. It was added because it is the only one
+of these sources that publishes its **whole catalogue as JSON** —
+`pieces.json`, 1442 tracks with title, feel, instruments, bpm, length and ISRC.
+That turns "calm ambient, no vocals, low-mid energy" into a query the engine can
+run and re-run, instead of a track somebody once picked by ear and can never
+justify again. Pixabay's public API covers images and video but not audio; FMA's
+API was retired; the YouTube Audio Library needs an interactive login.
+
+The licence is **CC BY 4.0**: free for commercial use, **credit required**. That
+is a stricter obligation than Pexels, which only requests attribution. The
+credit line is written to `assets/music/ATTRIBUTION.md` at fetch time and has to
+be copied into the video description on every platform the video is posted to.
+Tracks whose `instruments` field mentions any kind of voice are filtered out
+before scoring — a lyric competes with the VO for the same listening channel.
+
+If you would rather stay strictly on the original three sources, drop the
+`music` block from `script.json` and drop a bed in as
+`<variation>/assets/music/bed.wav` by hand; everything downstream of the fetch
+works the same way.
 
 ### ⛔ Do not use Wav2Lip
 

@@ -16,6 +16,11 @@ __pycache__/
 **/assets/beats.json
 **/assets/words.json
 **/voice.wav
+**/assets/music/source/
+*.mp3
+
+# Incompetech's catalogue, re-fetched weekly by bin/fetch-music.mjs
+00_ENGINE/v2/.cache/
 
 # Renders
 *.mp4
@@ -44,6 +49,8 @@ __pycache__/
 
 # Keep these despite the rules above
 !**/assets/stock/ATTRIBUTION.md
+!**/assets/music/ATTRIBUTION.md
+!**/assets/music/music.json
 !**/assets/MANIFEST.md
 !**/.env.example
 

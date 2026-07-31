@@ -11,11 +11,16 @@ Short-form vertical video pipeline. Two content tracks, two render engines.
 
 ```bash
 cd 00_ENGINE/v2
-node bin/build.mjs ../../02_BATCHES/<date>/<variation>   # tts -> align -> stock -> link
-npm run master      # out/master.mp4
+node bin/build.mjs ../../02_BATCHES/<date>/<variation>   # tts -> align -> stock -> music -> link
+npm run master      # out/master_final.mp4  (renders, then masters to -14 LUFS)
 npm run captions    # out/captions_alpha.mov   (ProRes 4444 + alpha, for Resolve)
 npm run graphics    # out/graphics_alpha.mov
 ```
+
+**`out/master.mp4` is not the deliverable — `out/master_final.mp4` is.** Remotion
+mixes the layers but cannot set programme loudness, so every render needs the
+`bin/master-audio.mjs` pass that `npm run master` chains on. A raw render
+measures about -15.8 LUFS against a -14 target.
 
 `00_ENGINE/pipeline/` + `00_ENGINE/remotion/` are **v1** — the older Kallaway split-frame path, kept because `v1_dendrite_waterjet` was built on it and is awaiting a shoot. Don't extend v1. Don't copy patterns from it.
 
@@ -26,6 +31,9 @@ npm run graphics    # out/graphics_alpha.mov
 | `bin/tts.mjs` | One continuous VO via Sarvam bulbul:v3 |
 | `bin/align.mjs` | whisper `--word_timestamps` → `assets/words.json` + `assets/beats.json` |
 | `bin/fetch-stock.mjs` | Pexels, one clip per beat + presenters → `assets/stock/`, `assets/face/` |
+| `bin/fetch-music.mjs` | Searches Incompetech's catalogue, normalises + calibrates the bed → `assets/music/` |
+| `bin/lib/music.mjs` | The duck envelope. One curve, shared by the render and the offline mix. |
+| `bin/master-audio.mjs` | Master bus: -14 LUFS / -1.5 dBTP. `--add-music` is the ffmpeg mix route. |
 | `bin/build.mjs` | Runs the above, copies into `public/` and `src/timeline.json` |
 | `src/core/design.ts` | All colour, type, grade tokens. Change looks here, nowhere else. |
 | `src/core/motion.ts` | Easing, springs, transitions (`flash`/`whip`/`zoomblur`), energy curve |
@@ -37,9 +45,46 @@ npm run graphics    # out/graphics_alpha.mov
 ```
 02_BATCHES/<date>/<slug>/
   script.json        beats: {id, say, caption, emphasis, stock, graphic, face, transitionIn, grade}
+                     plus an optional top-level `music` block
   AVATAR_SCRIPT.md   spoken words ONLY — must match every beat's `say` verbatim
   SCRIPT.md          sources, fact-check, shot table (times are a readout, not authored)
-  assets/            voice.wav, beats.json, words.json, stock/, face/   (all gitignored)
+  assets/            voice.wav, beats.json, words.json, stock/, face/, music/  (all gitignored)
+```
+
+### The music bed
+
+Same inversion as the captions: **the duck is not authored, it is derived.**
+`assets/words.json` already holds every word's measured start and end, so the
+envelope is built from where the speech actually is — down before the word
+lands, lifting in the gaps between beats. A sidechain compressor cannot do the
+second half of that, because it only knows about sound that has already
+happened.
+
+```jsonc
+"music": {
+  "query": "dark mysterious suspenseful drone",  // scored against feel/description/instruments
+  "trackId": "USUAN1100420",   // pin it, or the catalogue may pick differently next week
+  "startAt": 45,               // window into a long track
+  "bedLufs": -26,              // the bed AS HEARD IN THE MASTER, not the level of the file
+  "duckDb": 9, "liftDb": 2, "gapMin": 0.35,
+  "fadeIn": 1.2, "fadeOut": 1.5,
+  "endAt": "lastWord"          // so a tail hold stays silent
+}
+```
+
+Per beat, `"music": {"mode": "hard" | "settle" | "lift" | "normal"}`. `hard`
+caps the bed 18 dB down and forbids the gap lift — for a beat built on held
+silence. `settle` is the softer version and is **inferred from
+`retentionBeat`**. `lift` raises the floor for the one optimistic turn.
+
+`hold` deliberately infers nothing: in this engine it is a *camera* property
+(`BeatPicture` reads it to choose the push amount). Treating it as a music cue
+silently ducks beats that are simply held on one frame while somebody talks.
+
+Audition before pinning:
+
+```bash
+node bin/fetch-music.mjs <variation> --list --query "calm ambient"
 ```
 
 ---
@@ -69,6 +114,29 @@ Accuracy standard is the real constraint: **every factual claim carries a source
 **libx264 + yuv420p needs even dimensions.** A 859px-tall panel fails; round to 860.
 
 **Alpha renders need `--image-format=png`.** `remotion.config.ts` sets JPEG globally for the master. Without the override: *"Pixel format was set to 'yuva444p10le' but the image format is not PNG."* Verify with `ffprobe ... stream=pix_fmt` — want `yuva444p12le`.
+
+**`<Audio volume={fn}>` cannot take a smooth curve.** Remotion compiles a
+per-frame volume callback into a *single nested ffmpeg `volume` expression*, and
+a 45s envelope at 30fps overruns the expression parser outright: *"Missing ')'
+or too many args in 'if(between(t,4.2167,4.2500)+...'"*. The render dies in
+`preprocessAudioTrack` after bundling, so you pay the bundle before you find
+out. `build.mjs` prints the envelope into the bed with `applyEnvelopeToPcm` and
+hands Remotion a ready-ducked file at unity instead. Fine for a handful of
+discrete steps; not for anything continuous.
+
+**"Bed at -26 LUFS" means -26 in the master, and three things sit between.**
+Normalising the bed file to -26 leaves it around -33 where it is actually heard,
+which is inaudible. The duck removes ~9.5 dB (measured, because it depends on
+how much of *that* script is speech) and the master bus then adds ~1.8 dB
+lifting the programme to -14. `fetch-music.mjs` measures both and writes
+`makeupDb` into `music.json`; everything downstream folds it into the envelope.
+It goes in the *envelope*, not the file — printing +7.7 dB into a bed with any
+crest factor clips it, and Long Note Two hit 0.00 dBTP exactly that way.
+
+**Verify a mix against a music-free render, not against `voice.wav`.** The VO
+source and the render use different level conventions (a consistent ~2.85 dB
+offset), which buries a real signal. Two renders from the same compositor
+differ only by the thing you changed.
 
 **Remotion cannot stat the filesystem mid-render.** A missing clip 404s and kills the whole render. `build.mjs` writes `_stockAvailable` / `_faceAvailable` into the timeline; `stockFor()`/`faceFor()` return null so the beat falls back. Never bypass this.
 

@@ -8,7 +8,7 @@ import {
   useVideoConfig,
 } from 'remotion';
 import {COLOR, HEIGHT, WIDTH} from './core/design';
-import {BEATS, Beat, TOTAL_FRAMES, f, faceFor, stockFor} from './core/timeline';
+import {BEATS, Beat, MUSIC, TOTAL_FRAMES, f, faceFor, stockFor} from './core/timeline';
 import {Transition, energy, transition} from './core/motion';
 import {StockLayer} from './layers/Stock';
 import {FaceLayer, FaceStrap} from './layers/Face';
@@ -111,10 +111,27 @@ const GraphicsTrack: React.FC = () => (
   </>
 );
 
+/**
+ * The music bed.
+ *
+ * The duck is already printed into this file by bin/build.mjs — the curve comes
+ * from the aligned word timings, not from a compressor reacting to the voice,
+ * so the bed is down before a word starts rather than a few milliseconds after
+ * it, and it lifts in the gaps between beats. That is the thing a sidechain
+ * cannot do at all, because a sidechain only knows about sound that has already
+ * happened.
+ *
+ * Played at unity deliberately. Passing a per-frame `volume` callback here
+ * instead makes Remotion compile the curve into a single nested ffmpeg
+ * expression, which a smooth envelope overruns — see the note in build.mjs.
+ */
+const MusicBed: React.FC = () => (MUSIC ? <Audio src={staticFile(MUSIC.src)} /> : null);
+
 /** The finished video. */
 export const Master: React.FC = () => (
   <AbsoluteFill style={{backgroundColor: COLOR.bg}}>
     <Audio src={staticFile('voice.wav')} />
+    <MusicBed />
     <PictureTrack />
     <CaptionTrack />
     <Vignette />

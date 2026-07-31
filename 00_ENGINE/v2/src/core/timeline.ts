@@ -33,6 +33,25 @@ export type Beat = {
   words: Word[];
 };
 
+/**
+ * The music bed, written by bin/build.mjs.
+ *
+ * The file in public/ is already ducked: the envelope was derived from the same
+ * forced alignment the captions use and printed into the audio, so the bed is
+ * out of the way before a word lands and lifts in the gaps. Absent when there
+ * is no bed, which is the silent default.
+ */
+export type MusicSpec = {
+  src: string;
+  /** Level of the bed as heard in the delivered master, not of the file. */
+  bedLufs: number;
+  endAt: number;
+  credit: string;
+  title: string;
+  ducked: boolean;
+  duckedPeakDb: number;
+};
+
 type Spec = {
   id: string;
   title: string;
@@ -43,6 +62,8 @@ type Spec = {
   _stockAvailable?: string[];
   /** Presenter clip filenames present in public/face, written by bin/build.mjs. */
   _faceAvailable?: string[];
+  /** Bed + per-frame volume curve. Absent means render without music. */
+  _music?: MusicSpec;
 };
 
 const S = spec as unknown as Spec;
@@ -55,6 +76,9 @@ export const TOTAL_FRAMES = Math.round(S.duration * FPS);
 
 const AVAILABLE = new Set(S._stockAvailable ?? []);
 const FACES = new Set(S._faceAvailable ?? []);
+
+/** Null when the build produced no bed — the render simply has no music. */
+export const MUSIC: MusicSpec | null = S._music ?? null;
 
 export const f = (seconds: number) => Math.round(seconds * FPS);
 
