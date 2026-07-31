@@ -17,10 +17,10 @@ API keys — see `00_ENGINE/v2`. Media files are gitignored; this manifest is no
 
 | Measure | Value | Target |
 |---|---|---|
-| Integrated loudness | **-14.09 LUFS** | −14 (IG / YouTube normalisation) |
-| True peak | **-1.47 dBTP** | ≤ −1.0 |
-| Loudness range | 2.70 LU | — |
-| Music bed in the mix | -26 LUFS | -26 |
+| Integrated loudness | **-14.10 LUFS** | −14 (IG / YouTube normalisation) |
+| True peak | **-1.48 dBTP** | ≤ −1.0 |
+| Loudness range | 2.80 LU | — |
+| Music bed in the mix | -30.01 LUFS | -30 |
 | SFX bus peak | -10 dBFS | -10 |
 
 ## Music

@@ -80,7 +80,7 @@
       "template": "fullbleed",
       "stock": {
         "type": "video",
-        "query": "colorful website landing page design bright screen"
+        "query": "smartphone scrolling app interface hand"
       },
       "motion": {
         "push": 1.1,
@@ -99,7 +99,7 @@
       "template": "fullbleed",
       "stock": {
         "type": "video",
-        "query": "code editor screen colorful syntax highlighting bright"
+        "query": "web developer coding screen closeup"
       },
       "motion": {
         "push": 1.12,
@@ -180,7 +180,7 @@
       "template": "fullbleed",
       "stock": {
         "type": "video",
-        "query": "clean white minimal web page scrolling bright"
+        "query": "white abstract geometric shapes motion bright minimal"
       },
       "motion": {
         "push": 1.06,
@@ -334,5 +334,5 @@
       "hold": true
     }
   ],
-  "_stockNote": "Queries for `what`, `tool` and `why2` were reselected after measuring mean frame luma: the originals rendered at 6-21 out of 255, i.e. effectively black frames carrying only a caption. A video about visible animated websites cannot have its brightest claim land on an empty frame."
+  "_stockNote": "Queries for `what`, `tool` and `why2` were reselected twice. First pass optimised only on mean frame luma and produced bright but wrong footage — a stock \"CLICK HERE\" placard for a beat about scroll triggers. Brightness is necessary and not sufficient: candidates were then fetched, contact-sheeted and looked at before choosing. Measure to find the defect, look to fix it."
 }

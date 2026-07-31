@@ -194,6 +194,43 @@ if (existsSync(stockDir)) {
 }
 const clips = available.length;
 
+/**
+ * Warn about stock that is effectively a black frame.
+ *
+ * Cheap and worth it: a clip that looks moody in a Pexels thumbnail can land at
+ * a mean luma of 6/255 once the grade and vignette are on it, at which point the
+ * beat is a caption floating on nothing. That is invisible in a shot table, in
+ * the build log, and in a scrub — it was caught by measuring frames, and only
+ * after a full render.
+ *
+ * Measured on the source clip, before the grade darkens it further, so the
+ * threshold is deliberately low: this flags footage that was never going to
+ * work, not footage that is merely dark on purpose.
+ */
+if (available.length) {
+  const dark = [];
+  for (const id of available) {
+    const r = spawnSync(
+      'ffmpeg',
+      ['-nostdin', '-hide_banner', '-ss', '1', '-i', join(pub, 'stock', `${id}.mp4`), '-frames:v', '1', '-pix_fmt', 'gray', '-f', 'rawvideo', '-'],
+      {maxBuffer: 64 * 1024 * 1024},
+    );
+    const buf = r.stdout;
+    if (!buf?.length) continue;
+    let sum = 0;
+    for (let i = 0; i < buf.length; i++) sum += buf[i];
+    const luma = sum / buf.length;
+    if (luma < 30) dark.push([id, luma]);
+  }
+  if (dark.length) {
+    console.log(`-- ${dark.length} stock clip${dark.length === 1 ? '' : 's'} may render as an empty frame:`);
+    for (const [id, luma] of dark) {
+      console.log(`   ${id.padEnd(14)} mean luma ${luma.toFixed(1)}/255 — the grade will darken this further`);
+    }
+    console.log('   Reword the query toward a brighter subject, or accept it if the beat is meant to be black.');
+  }
+}
+
 // Presenter clips: stock now, your own recordings later. Same drop-in path.
 rmSync(join(pub, 'face'), {recursive: true, force: true});
 mkdirSync(join(pub, 'face'), {recursive: true});

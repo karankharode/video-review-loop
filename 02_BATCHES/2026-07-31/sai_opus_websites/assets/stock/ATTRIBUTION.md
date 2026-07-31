@@ -17,3 +17,13 @@ Pexels licence: free for commercial use, attribution not required but requested.
 | `what` | RingTheBell.com Task Manager | [source](https://www.pexels.com/video/woman-sign-sitting-model-4883865/) | `colorful website landing page design bright screen` |
 | `tool` | Jakub Zerdzicki | [source](https://www.pexels.com/video/colorful-html-code-on-computer-monitor-34459460/) | `code editor screen colorful syntax highlighting bright` |
 | `why2` | KATRIN  BOLOVTSOVA | [source](https://www.pexels.com/video/flatlay-notepad-and-pencil-6176563/) | `clean white minimal web page scrolling bright` |
+| `tool` | Jakub Zerdzicki | [source](https://www.pexels.com/video/colorful-html-code-on-computer-monitor-34459460/) | `code editor screen colorful syntax highlighting bright` |
+| `tool` | Artem Podrez | [source](https://www.pexels.com/video/person-putting-flowers-on-vase-6782207/) | `laptop screen glowing bright desk workspace daylight` |
+| `tool` | Artem Podrez | [source](https://www.pexels.com/video/person-putting-flowers-on-vase-6782207/) | `laptop screen glowing bright desk workspace daylight` |
+| `tool` | Mikhail Nilov | [source](https://www.pexels.com/video/a-man-typing-on-a-laptop-7595017/) | `man typing laptop bright modern office window` |
+| `tool` | Mikhail Nilov | [source](https://www.pexels.com/video/a-man-typing-on-a-laptop-7595017/) | `man typing laptop bright modern office window` |
+| `tool` | Emanuel Pedro | [source](https://www.pexels.com/video/modern-workspace-with-laptop-and-view-33841806/) | `developer desk setup bright natural light laptop` |
+| `tool` | Artem Podrez | [source](https://www.pexels.com/video/person-putting-flowers-on-vase-6782207/) | `laptop screen glowing bright desk workspace daylight` |
+| `what` | cottonbro studio | [source](https://www.pexels.com/video/sales-posting-on-instagram-6115070/) | `smartphone scrolling app interface hand` |
+| `tool` | Mikhail Nilov | [source](https://www.pexels.com/video/a-man-typing-on-the-laptop-7989667/) | `web developer coding screen closeup` |
+| `why2` | KATRIN  BOLOVTSOVA | [source](https://www.pexels.com/video/stop-motion-animation-of-circle-items-7296062/) | `white abstract geometric shapes motion bright minimal` |

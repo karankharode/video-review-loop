@@ -206,6 +206,14 @@ lifting the programme to -14. `fetch-music.mjs` measures both and writes
 It goes in the *envelope*, not the file — printing +7.7 dB into a bed with any
 crest factor clips it, and Long Note Two hit 0.00 dBTP exactly that way.
 
+**Stock that looks moody in a Pexels thumbnail can render as a black frame.**
+`sai_opus_websites` had three beats land at a mean luma of 6–21 out of 255 — a
+caption floating on nothing, in a video *about* visible websites. Invisible in
+the shot table, in the build log, and in a scrub; found only by measuring frames
+after a full render. `build.mjs` now warns when a source clip is under 30/255,
+before the grade darkens it further. Queries with "dark", "abstract" or "night"
+in them are the usual culprits, and a code editor is dark by definition.
+
 **A beat's measured `end` is where its last word stops, not where the next beat
 starts.** `align.mjs` extends every beat to close the gap, because otherwise the
 compositor renders an empty frame through the speaker's pause. This used to

@@ -10,7 +10,7 @@ API keys — see `00_ENGINE/v2`. Media files are gitignored; this manifest is no
 
 | File | Size | What it is |
 |---|---|---|
-| `master_final.mp4` | 25.2 MB | **The deliverable.** Mastered, scored, ready to post. |
+| `master_final.mp4` | 30.0 MB | **The deliverable.** Mastered, scored, ready to post. |
 | `still_*.png` | — | 6 frames for thumbnail selection |
 
 ## Audio, measured
@@ -48,7 +48,7 @@ Ducked to the forced-alignment speech envelope, out at 42.44s.
 
 ## Sources
 
-10 stock clips — see `assets/stock/ATTRIBUTION.md`.
+23 stock clips — see `assets/stock/ATTRIBUTION.md`.
 Factual claims and their sources are in `SCRIPT.md`. Posting copy, if written, is in `POSTING.md`.
 
 ## Rebuild
