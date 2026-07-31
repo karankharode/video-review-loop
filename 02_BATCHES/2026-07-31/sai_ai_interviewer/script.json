@@ -19,6 +19,20 @@
     "lang": "en-IN"
   },
   "_note": "`say` is the spoken text and the alignment key — it must match AVATAR_SCRIPT.md word for word. Beat start/end are NOT authored here; bin/align.mjs derives them from whisper word timestamps and writes assets/beats.json.",
+  "_musicNote": "The duck is not authored either. bin/build.mjs reads assets/words.json — the same forced-alignment output the captions use — and builds the volume envelope from where the words actually are, so the bed is already down when a word lands and lifts in the gaps between beats. Per-beat `music.mode` overrides it; `hold` beats infer `hard` and `retentionBeat` infers `settle` without restating them. Levels below follow DAVinci_BRIEF.md: -24 to -26 LUFS under the VO, duck hard on 'Your words.', lift on the warm turn, out by the last word so the tail hold is silent.",
+  "music": {
+    "query": "dark mysterious suspenseful drone",
+    "trackId": "USUAN1100420",
+    "startAt": 45,
+    "maxBpm": 100,
+    "bedLufs": -30,
+    "duckDb": 12,
+    "liftDb": 1.5,
+    "gapMin": 0.35,
+    "fadeIn": 1.2,
+    "fadeOut": 1.5,
+    "endAt": "lastWord"
+  },
   "beats": [
     {
       "id": "hook",
@@ -138,6 +152,10 @@
       "transitionIn": "flash",
       "grade": "accent",
       "hold": true,
+      "_music": "DAVinci_BRIEF rule 1: this is the answer to the question the hook asked, and it is one second long. Nothing under it.",
+      "music": {
+        "mode": "hard"
+      },
       "face": {
         "asset": "presenter_a",
         "mode": "pip"
@@ -228,6 +246,10 @@
       "transitionIn": "zoomblur",
       "grade": "cold",
       "retentionBeat": true,
+      "_music": "Retention beat — motion settles here on purpose, so the bed settles with it rather than swelling into the space.",
+      "music": {
+        "mode": "settle"
+      },
       "face": {
         "asset": "presenter_b",
         "mode": "band"
@@ -268,6 +290,9 @@
       },
       "transitionIn": "flash",
       "grade": "warm",
+      "music": {
+        "mode": "lift"
+      },
       "face": {
         "asset": "presenter_a",
         "mode": "pip"

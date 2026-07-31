@@ -40,6 +40,42 @@ Karan's stated brief — *"they will learn something or at least dream about som
 - AI-generated cinematic scene sequence
 - Split screen or side-by-side comparison
 
+## The first three seconds — the promise rule
+
+Added 2026-07-31 after a cut where the hook was a true statement and nothing
+else. It stated a fact and gave the viewer no reason to stay for the next forty
+seconds.
+
+**The first three seconds must deliver context and a promise, across all three
+channels at once.** Not a teaser fragment. Not a mood shot. The viewer should be
+able to answer *"what am I about to find out, and why should I wait for it?"*
+before the second beat starts.
+
+| Channel | What it must carry in the first 3s |
+|---|---|
+| **Voice** | The subject **and** the promise — what the video will show, not just an assertion. |
+| **On-screen text** | ≤6 words, readable in under one second, carrying the same promise. |
+| **Sound** | A cue on or just before frame 1. Silence for three seconds reads as a video that has not started. |
+| **Picture** | Motion. Never a static frame, never a slow fade in. |
+
+**Test it like this:** cover everything after 3 seconds. If what remains is only
+true, it fails. It has to be true *and* unfinished — a stated claim with the
+evidence still owed.
+
+```
+Dull:     "Nobody out there can see your heart pounding."
+          True. Complete. Nothing is owed. Nothing to wait for.
+
+Promising: "Nobody can see your nerves — and there's a study that proves it."
+          Same claim, but now a debt: the study. The viewer waits to collect.
+```
+
+The engine checks what it can (`bin/avatar-script.mjs` warns on a hook with no
+promise marker, no caption, or no cue in the first three seconds), but the
+judgement is yours — an em-dash does not make a promise.
+
+---
+
 ## Axis D — Hook mechanism
 
 - Cold fact stated flat, no setup

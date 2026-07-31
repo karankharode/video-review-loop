@@ -259,7 +259,14 @@ const Meters: React.FC<{g: any}> = ({g}) => {
   );
 };
 
-/** Struck-out thing vs. an assembling thing. */
+/**
+ * Struck-out thing vs. an assembling thing.
+ *
+ * `left` is always the one struck through and `right` is always the one that
+ * builds from `right.steps`. The `state` field some scripts pass is *not* read —
+ * position is the whole contract. Putting the steps under `left` renders a
+ * struck label and nothing else.
+ */
 const Versus: React.FC<{g: any}> = ({g}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();

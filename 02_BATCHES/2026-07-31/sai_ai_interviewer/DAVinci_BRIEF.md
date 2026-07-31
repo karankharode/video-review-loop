@@ -72,10 +72,31 @@ Times are **measured from the audio**, not authored.
 
 ## Music
 
-- Tense, minimal, low. −24 to −26 LUFS under the VO.
-- **Duck hard 12.16–13.18** ("Your words.").
-- Lift at 26.98s (the warm turn) — the only optimistic moment.
-- Out by 44.06s. The tail hold is silent.
+**The engine now does all of this.** `out/master_final.mp4` ships scored and
+mastered — this section is the spec it was built to, kept so you can check it
+or rebuild the mix by hand in Resolve.
+
+- Tense, minimal, low. −24 to −26 LUFS under the VO. *(Measured: −26.2 LUFS in the master.)*
+- **Duck hard 12.16–13.18** ("Your words."). *(Bed is 18 dB down across the beat — it adds 0.08 dB to that window.)*
+- Lift at 26.98s (the warm turn) — the only optimistic moment. *(`music: {mode: "lift"}` on `goodnews`.)*
+- Out by 44.06s. The tail hold is silent. *(`endAt: "lastWord"`; the tail is digital silence.)*
+
+Track: **"Long Note Two"** — Kevin MacLeod, CC BY 4.0, window from 45s.
+Chosen because at matched loudness it puts 15.3 dB less energy in the
+300–3400 Hz speech band than the next candidate — its weight is deep bass,
+under the VO rather than across it — and that 45s window has the flattest
+loudness range in the track (LRA 5.1), so the bed has no arc of its own.
+
+**The credit is required by the licence.** See `POSTING.md`.
+
+To change the mix without re-rendering every frame:
+
+```bash
+cd 00_ENGINE/v2
+# edit the music block in script.json, then
+node bin/build.mjs ../../02_BATCHES/2026-07-31/sai_ai_interviewer --skip-stock
+node bin/master-audio.mjs --add-music --in <a VO-only render> --out out/master_final.mp4
+```
 
 ## Export
 

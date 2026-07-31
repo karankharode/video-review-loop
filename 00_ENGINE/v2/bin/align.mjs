@@ -65,6 +65,43 @@ const alignKey = createHash('sha1')
   .digest('hex')
   .slice(0, 16);
 
+/**
+ * Extend every beat to the start of the next one, so the picture holds through
+ * a pause instead of cutting to nothing.
+ *
+ * A beat's measured `end` is where its last word stops. The speaker then
+ * breathes, and until the next beat begins there is no beat on screen — which
+ * the compositor renders as an empty frame. An editor holds the shot through a
+ * breath; nobody cuts to black for 700ms.
+ *
+ * This used to close gaps only under 0.6s, which is why it looked fine for a
+ * long time: the first script's pauses were all shorter than that. The next
+ * voiceover came back slower, its pauses measured 0.62-0.86s, and five blank
+ * frames appeared in the middle of the video. There is no threshold at which a
+ * hole becomes correct, so there is no threshold here.
+ *
+ * Applied on load rather than only when whisper runs, because this is a
+ * presentation decision about measured times — not a measurement — and baking
+ * it into the cache would mean a fix to this rule needs a 6-minute re-align to
+ * take effect.
+ */
+function closeGaps(beats) {
+  let closed = 0;
+  let longest = 0;
+  for (let i = 0; i < beats.length - 1; i++) {
+    const gap = beats[i + 1].start - beats[i].end;
+    if (gap > 0) {
+      beats[i].end = beats[i + 1].start;
+      closed++;
+      longest = Math.max(longest, gap);
+    }
+  }
+  if (closed) {
+    console.log(`-- held ${closed} beat${closed === 1 ? '' : 's'} through a pause (longest ${longest.toFixed(2)}s)`);
+  }
+  return beats;
+}
+
 if (!force && existsSync(beatsOut)) {
   let cached = null;
   try {
@@ -84,12 +121,14 @@ if (!force && existsSync(beatsOut)) {
       ...spec,
       duration: cached.duration,
       _alignKey: alignKey,
-      beats: spec.beats.map((b) => {
-        const c = byId.get(b.id);
-        return c
-          ? {...b, start: c.start, end: c.end, matched: c.matched, words: c.words}
-          : b;
-      }),
+      beats: closeGaps(
+        spec.beats.map((b) => {
+          const c = byId.get(b.id);
+          return c
+            ? {...b, start: c.start, end: c.end, matched: c.matched, words: c.words}
+            : b;
+        }),
+      ),
     };
     writeFileSync(beatsOut, JSON.stringify(merged, null, 2));
     process.exit(0);
@@ -220,11 +259,7 @@ for (const b of spec.beats) {
   cursor = endIdx;
 }
 
-// Close sub-second gaps so there is never a hole between beats.
-for (let i = 0; i < beats.length - 1; i++) {
-  const gap = beats[i + 1].start - beats[i].end;
-  if (gap > 0 && gap < 0.6) beats[i].end = beats[i + 1].start;
-}
+closeGaps(beats);
 beats.at(-1).end = Math.max(beats.at(-1).end, words.at(-1).end);
 
 const duration = +(beats.at(-1).end + (spec.tailHold ?? 1.0)).toFixed(3);

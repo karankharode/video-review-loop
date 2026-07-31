@@ -13,3 +13,4 @@ Match on *substance*, not wording — "AI passes medical exam" and "AI outperfor
 | 2026-07-30 | SAI | India IT fresher hiring squeeze and delayed onboarding | v5 | pending review |
 | 2026-07-31 | NEWS | Lithium dendrites crack solid-state battery ceramic by hydrostatic pressure, not electron leakage | v1 | placeholder cut built, awaiting shoot |
 | 2026-07-31 | SAI | AI video interviews score words and delivery, not facial expressions (HireVue dropped facial analysis 2021) | sai_ai_interviewer | rendered on v2 engine, awaiting review |
+| 2026-07-31 | SAI | Stage fright: nerves are far less visible than they feel (illusion of transparency), and reappraising anxiety as excitement beats trying to calm down | sai_stage_fright | rendered on v2 engine, awaiting review |

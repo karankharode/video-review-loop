@@ -101,4 +101,16 @@ Alternative: `still_12.7s.png` (waveform + pip) if you want the product angle fo
 
 ## Attribution
 
-13 Pexels clips + 2 presenter clips. Credits in `assets/stock/ATTRIBUTION.md`. Pexels doesn't require attribution, but if you want to give it, that file has every photographer and source URL.
+**Music — this one is required, not optional.** The bed is CC BY 4.0, so the
+credit has to appear in the video description on **every** platform you post to.
+Paste this line:
+
+> "Long Note Two" by Kevin MacLeod (incompetech.com) — licensed under CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
+
+Put it at the end of the description, below the hashtags. It does not need to be
+in the caption body or the pinned comment — the description is where the licence
+expects it. Full record in `assets/music/ATTRIBUTION.md`.
+
+**Stock —** 13 Pexels clips + 2 presenter clips. Credits in
+`assets/stock/ATTRIBUTION.md`. Pexels doesn't require attribution, but if you
+want to give it, that file has every photographer and source URL.

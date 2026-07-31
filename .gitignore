@@ -16,6 +16,21 @@ __pycache__/
 **/assets/beats.json
 **/assets/words.json
 **/voice.wav
+**/assets/music/source/
+*.mp3
+
+# Incompetech's catalogue, re-fetched weekly by bin/fetch-music.mjs
+00_ENGINE/v2/.cache/
+
+# Dropped-in music and SFX. Inputs, not source — the READMEs stay.
+00_ENGINE/v2/music-library/*
+!00_ENGINE/v2/music-library/README.md
+00_ENGINE/v2/sfx-library/*
+!00_ENGINE/v2/sfx-library/README.md
+**/assets/sfx/
+
+# The run register — the index is the record, the videos are regenerable
+05_OUTPUTS/*.mp4
 
 # Renders
 *.mp4
@@ -44,6 +59,10 @@ __pycache__/
 
 # Keep these despite the rules above
 !**/assets/stock/ATTRIBUTION.md
+!**/assets/music/ATTRIBUTION.md
+!**/assets/music/music.json
+!**/MANIFEST.md
+!05_OUTPUTS/INDEX.md
 !**/assets/MANIFEST.md
 !**/.env.example
 
